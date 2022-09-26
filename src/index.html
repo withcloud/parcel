@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./index.css" rel="stylesheet" />
+  </head>
+
+  <body class="bg-gray-300">
+    <div
+      id="container"
+      class="w-full h-full overflow-hidden absolute bg-red-300"
+    >
+      <canvas
+        id="c"
+        class="bg-blue-300 opacity-50 absolute w-full h-full"
+      ></canvas>
+      <video
+        id="v"
+        autoplay
+        muted
+        playsinline
+        class="bg-yellow-300 opacity-50 absolute right-0 bottom-0"
+      ></video>
+      <div
+        id="debug"
+        class="absolute bottom-0 left-0 w-full h-[100px] break-words"
+      ></div>
+    </div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
