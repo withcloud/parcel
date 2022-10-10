@@ -1,3 +1,7 @@
+/* eslint-disable no-unused-vars */
+
+import { fabric } from "fabric";
+
 import * as posedetection from "@tensorflow-models/pose-detection";
 
 import * as params from "./params";
@@ -47,8 +51,11 @@ const COLOR_PALETTE = [
 export class Camera {
   constructor() {
     this.video = document.getElementById("video");
-    this.canvas = document.getElementById("output");
+    this.canvas = new fabric.Canvas("output", { selection: false });
     this.ctx = this.canvas.getContext("2d");
+    this.keypoints = {};
+    this.skeletons = {};
+    window.canvas = this.canvas;
   }
 
   /**
@@ -101,25 +108,26 @@ export class Camera {
     const canvasContainer = document.querySelector(".canvas-wrapper");
     canvasContainer.style = `width: ${videoWidth}px; height: ${videoHeight}px`;
 
-    // Because the image from camera is mirrored, need to flip horizontally.
-    camera.ctx.translate(camera.video.videoWidth, 0);
-    camera.ctx.scale(-1, 1);
+    // // Because the image from camera is mirrored, need to flip horizontally.
+    // camera.ctx.translate(camera.video.videoWidth, 0);
+    // camera.ctx.scale(-1, 1);
 
     return camera;
   }
 
   drawCtx() {
-    this.ctx.drawImage(
-      this.video,
-      0,
-      0,
-      this.video.videoWidth,
-      this.video.videoHeight
-    );
-  }
-
-  clearCtx() {
-    this.ctx.clearRect(0, 0, this.video.videoWidth, this.video.videoHeight);
+    if (!this.webcamImage) {
+      this.webcamImage = new fabric.Image(this.video, {
+        left: 0,
+        top: 0,
+        objectCaching: false,
+        selectable: false,
+        hoverCursor: "default",
+        flipX: true
+      });
+      this.canvas.add(this.webcamImage);
+      this.webcamImage.zIndex = 0;
+    }
   }
 
   /**
@@ -128,6 +136,14 @@ export class Camera {
    */
   drawResults(poses) {
     for (const pose of poses) {
+      pose.keypoints.forEach(kp => {
+        // if (kp.name.includes("left")) {
+        //   kp.name = kp.name.replace("left", "right");
+        // } else if (kp.name.includes("right")) {
+        //   kp.name = kp.name.replace("right", "left");
+        // }
+        kp.x = this.canvas.width - kp.x;
+      });
       this.drawResult(pose);
     }
   }
@@ -138,7 +154,7 @@ export class Camera {
    */
   drawResult(pose) {
     if (pose.keypoints != null) {
-      this.drawKeypoints(pose.keypoints);
+      this.drawKeypoints(pose.keypoints, pose.id);
       this.drawSkeleton(pose.keypoints, pose.id);
     }
   }
@@ -147,39 +163,58 @@ export class Camera {
    * Draw the keypoints on the video.
    * @param keypoints A list of keypoints.
    */
-  drawKeypoints(keypoints) {
+  drawKeypoints(keypoints, poseId) {
     const keypointInd = posedetection.util.getKeypointIndexBySide(
       params.STATE.model
     );
-    this.ctx.fillStyle = "Red";
-    this.ctx.strokeStyle = "White";
-    this.ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
 
     for (const i of keypointInd.middle) {
-      this.drawKeypoint(keypoints[i]);
+      this.drawKeypoint(keypoints[i], "red", poseId);
     }
 
-    this.ctx.fillStyle = "Green";
     for (const i of keypointInd.left) {
-      this.drawKeypoint(keypoints[i]);
+      this.drawKeypoint(keypoints[i], "green", poseId);
     }
 
-    this.ctx.fillStyle = "Orange";
     for (const i of keypointInd.right) {
-      this.drawKeypoint(keypoints[i]);
+      this.drawKeypoint(keypoints[i], "orange", poseId);
     }
   }
 
-  drawKeypoint(keypoint) {
+  drawKeypoint(keypoint, color, poseId) {
     // If score is null, just show the keypoint.
     const score = keypoint.score != null ? keypoint.score : 1;
     const scoreThreshold = params.STATE.modelConfig.scoreThreshold || 0;
 
+    // 若沒有，先建立
+    if (!this.keypoints[keypoint.name]) {
+      const c = new fabric.Circle({
+        left: keypoint.x,
+        top: keypoint.y,
+        strokeWidth: 2,
+        radius: 4,
+        fill: color,
+        stroke: "white",
+        originX: "center",
+        originY: "center"
+      });
+      c.hasControls = false;
+      c.hasBorders = false;
+      c.poseId = poseId;
+      c.keypointName = keypoint.name;
+      this.canvas.add(c);
+      this.keypoints[keypoint.name] = c;
+      c.zIndex = 1;
+    }
+
+    const c = this.keypoints[keypoint.name];
+
     if (score >= scoreThreshold) {
-      const circle = new Path2D();
-      circle.arc(keypoint.x, keypoint.y, params.DEFAULT_RADIUS, 0, 2 * Math.PI);
-      this.ctx.fill(circle);
-      this.ctx.stroke(circle);
+      c.visible = true;
+      c.left = keypoint.x;
+      c.top = keypoint.y;
+    } else {
+      c.visible = false;
     }
   }
 
@@ -189,13 +224,7 @@ export class Camera {
    */
   drawSkeleton(keypoints, poseId) {
     // Each poseId is mapped to a color in the color palette.
-    const color =
-      params.STATE.modelConfig.enableTracking && poseId != null
-        ? COLOR_PALETTE[poseId % 20]
-        : "White";
-    this.ctx.fillStyle = color;
-    this.ctx.strokeStyle = color;
-    this.ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
+    const color = "White";
 
     posedetection.util
       .getAdjacentPairs(params.STATE.model)
@@ -208,11 +237,33 @@ export class Camera {
         const score2 = kp2.score != null ? kp2.score : 1;
         const scoreThreshold = params.STATE.modelConfig.scoreThreshold || 0;
 
+        // 若沒有，先建立
+        const name = kp1.name + "-" + kp2.name;
+        if (!this.skeletons[name]) {
+          const line = new fabric.Line([kp1.x, kp1.y, kp2.x, kp2.y], {
+            fill: color,
+            stroke: color,
+            strokeWidth: 2,
+            selectable: false,
+            evented: false
+          });
+          this.canvas.add(line);
+          this.skeletons[name] = line;
+          line.zIndex = 1;
+        }
+
+        const line = this.skeletons[name];
+
         if (score1 >= scoreThreshold && score2 >= scoreThreshold) {
-          this.ctx.beginPath();
-          this.ctx.moveTo(kp1.x, kp1.y);
-          this.ctx.lineTo(kp2.x, kp2.y);
-          this.ctx.stroke();
+          line.visible = true;
+          line.set({
+            x1: kp1.x,
+            y1: kp1.y,
+            x2: kp2.x,
+            y2: kp2.y
+          });
+        } else {
+          line.visible = false;
         }
       });
   }

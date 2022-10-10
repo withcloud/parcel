@@ -6,27 +6,51 @@
       content="width=device-width,initial-scale=1,maximum-scale=1.0, user-scalable=no"
     />
     <link href="./index.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r16/Stats.min.js"></script>
     <script type="module" src="app.js"></script>
   </head>
 
-  <body class="bg-blue-300">
+  <body class="bg-gray-300">
+    <!-- fpx -->
     <div id="stats"></div>
+
     <div id="main">
+      <!-- camera and canvas -->
       <div class="container">
         <div class="canvas-wrapper">
-          <canvas id="output"></canvas>
+          <canvas id="output" width="640" height="480"></canvas>
           <video
             id="video"
+            class="opacity-25"
             playsinline
             style="
               -webkit-transform: scaleX(-1);
               transform: scaleX(-1);
-              visibility: hidden;
-              width: auto;
-              height: auto;
               "
           ></video>
+        </div>
+      </div>
+
+      <!-- intro -->
+      <div
+        id="intro"
+        class="w-[640px] h-[480px] bg-red-400 opacity-50 absolute top-0 left-0"
+      >
+        <div
+          class="w-full h-full flex justify-center items-center text-4xl text-black"
+        >
+          intro
+        </div>
+      </div>
+
+      <!-- menu -->
+      <div
+        id="menu"
+        class="w-[640px] h-[480px] opacity-50 absolute top-0 left-0"
+      >
+        <div
+          class="w-full h-full flex justify-center items-center text-4xl text-black"
+        >
+          用手選擇其中一邊
         </div>
       </div>
     </div>
