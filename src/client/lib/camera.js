@@ -188,7 +188,6 @@ export class Camera {
       c.hasBorders = false;
       c.poseId = poseId;
       c.keypointName = keypoint.name;
-      c.dirty = false;
       this.canvas.add(c);
       this.keypoints[keypoint.name] = c;
       c.zIndex = 8;
