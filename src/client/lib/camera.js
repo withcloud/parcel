@@ -184,8 +184,6 @@ export class Camera {
         originX: "center",
         originY: "center"
       });
-      c.hasControls = false;
-      c.hasBorders = false;
       c.poseId = poseId;
       c.keypointName = keypoint.name;
       this.canvas.add(c);
