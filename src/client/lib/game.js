@@ -2,6 +2,8 @@
 
 import { fabric } from "fabric";
 
+import * as sound from "./sound";
+
 const lineLimits = [
   // 起點在左邊
   {
@@ -296,6 +298,7 @@ export class Game {
     this.menuItem2.visible = true;
     // 預設是 game1
     this.menuSelected = "game1";
+    sound.click.play();
 
     this.checkIntersectionHandle = () => {
       const leftHand = this.camera.keypoints["left_wrist"];
@@ -309,11 +312,17 @@ export class Game {
 
       if (targetHand) {
         if (targetHand.intersectsWithObject(this.menuItem1, true, true)) {
-          this.menuSelected = "game1";
+          if (this.menuSelected !== "game1") {
+            this.menuSelected = "game1";
+            sound.click.play();
+          }
         } else if (
           targetHand.intersectsWithObject(this.menuItem2, true, true)
         ) {
-          this.menuSelected = "game2";
+          if (this.menuSelected !== "game2") {
+            this.menuSelected = "game2";
+            sound.click.play();
+          }
         }
       }
 
@@ -377,6 +386,7 @@ export class Game {
 
       // 顯示一個燈
       this.rect1.set("fill", "rgba(200,0,0,1)");
+      sound.click.play();
       // 顯示半透明線
       this.line.visible = true;
       const p =
@@ -406,12 +416,14 @@ export class Game {
 
       // 顯示一個燈
       this.rect2.set("fill", "rgba(0,200,0,1)");
+      sound.click.play();
 
       // 等一秒
       await wait(1000);
 
       // 顯示一個燈
       this.rect3.set("fill", "rgba(0,0,200,1)");
+      sound.click.play();
       // 變成實線
       this.line.set("stroke", "rgba(255,0,0,1)");
       // 並開始計算碰撞
@@ -449,7 +461,13 @@ export class Game {
       this.checkIntersectionHandle = null;
       // 變回綠色
       this.line.set("stroke", "rgba(0,255,0,0.5)");
+
       console.log("kit", kit);
+      if (kit) {
+        sound.click5.play();
+      } else {
+        sound.click4.play();
+      }
 
       // 等 0.8 秒
       await wait(800);

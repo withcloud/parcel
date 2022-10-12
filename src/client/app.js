@@ -4,6 +4,7 @@ import * as posedetection from "@tensorflow-models/pose-detection";
 import _ from "lodash";
 
 import "./lib/import-jquery";
+import * as sound from "./lib/sound";
 
 import { Camera } from "./lib/camera";
 import { STATE } from "./lib/params";
