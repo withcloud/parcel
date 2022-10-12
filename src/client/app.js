@@ -92,6 +92,12 @@ async function renderResult() {
     // _.sortBy(camera.canvas.getObjects(), "zIndex").forEach(obj => {
     //   camera.canvas.bringToFront(obj);
     // });
+    camera.canvas.bringToFront(game.menuItem1);
+    camera.canvas.bringToFront(game.menuItem2);
+    camera.canvas.bringToFront(game.rect1);
+    camera.canvas.bringToFront(game.rect2);
+    camera.canvas.bringToFront(game.rect3);
+    camera.canvas.bringToFront(game.line);
   }
 }
 
