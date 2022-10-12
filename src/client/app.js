@@ -15,6 +15,8 @@ import {
 } from "./lib/stats_panel";
 import { Game } from "./lib/game";
 
+fabric.Object.prototype.objectCaching = false;
+
 let detector;
 let camera;
 let game;
