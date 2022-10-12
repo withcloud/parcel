@@ -85,19 +85,19 @@ async function renderResult() {
     const pose = poses && poses[0];
     if (pose) {
       camera.drawResult(pose);
-      camera.drawAngles();
+      // camera.drawAngles();
     }
 
     // // 重新安排順序
     // _.sortBy(camera.canvas.getObjects(), "zIndex").forEach(obj => {
     //   camera.canvas.bringToFront(obj);
     // });
-    camera.canvas.bringToFront(game.menuItem1);
-    camera.canvas.bringToFront(game.menuItem2);
-    camera.canvas.bringToFront(game.rect1);
-    camera.canvas.bringToFront(game.rect2);
-    camera.canvas.bringToFront(game.rect3);
-    camera.canvas.bringToFront(game.line);
+    // camera.canvas.bringToFront(game.menuItem1);
+    // camera.canvas.bringToFront(game.menuItem2);
+    // camera.canvas.bringToFront(game.rect1);
+    // camera.canvas.bringToFront(game.rect2);
+    // camera.canvas.bringToFront(game.rect3);
+    // camera.canvas.bringToFront(game.line);
   }
 }
 
@@ -108,7 +108,7 @@ async function renderPrediction() {
 
     if (!firstTime) {
       // 檢查是否有碰到
-      game.checkIntersection();
+      // game.checkIntersection();
 
       // canvas render
       camera.canvas.renderAll();
@@ -130,7 +130,7 @@ async function app() {
   detector = await createDetector();
 
   // 遊戲邏輯
-  window.game = game = new Game(camera);
+  // window.game = game = new Game(camera);
 
   // 開始 loop
   renderPrediction();
