@@ -88,10 +88,10 @@ async function renderResult() {
       camera.drawAngles();
     }
 
-    // 重新安排順序
-    _.sortBy(camera.canvas.getObjects(), "zIndex").forEach(obj => {
-      camera.canvas.bringToFront(obj);
-    });
+    // // 重新安排順序
+    // _.sortBy(camera.canvas.getObjects(), "zIndex").forEach(obj => {
+    //   camera.canvas.bringToFront(obj);
+    // });
   }
 }
 
