@@ -190,7 +190,7 @@ export class Camera {
       c.keypointName = keypoint.name;
       this.canvas.add(c);
       this.keypoints[keypoint.name] = c;
-      c.zIndex = 1;
+      c.zIndex = 10;
     }
 
     const c = this.keypoints[keypoint.name];
@@ -235,7 +235,7 @@ export class Camera {
           });
           this.canvas.add(line);
           this.skeletons[name] = line;
-          line.zIndex = 1;
+          line.zIndex = 10;
         }
 
         const line = this.skeletons[name];
