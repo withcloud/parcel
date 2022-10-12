@@ -18,6 +18,7 @@ import { Game } from "./lib/game";
 let detector;
 let camera;
 let game;
+let firstTime = true;
 
 // 建立 post detector
 async function createDetector() {
@@ -65,25 +66,31 @@ async function renderResult() {
 
     // 結束 fps
     endEstimatePosesStats();
+
+    if (firstTime) {
+      firstTime = false;
+    }
   }
 
-  // 清除 canvas
-  // camera.canvas.clear();
+  if (!firstTime) {
+    // 清除 canvas
+    // camera.canvas.clear();
 
-  // canvas 畫 webcam
-  camera.drawCtx();
+    // canvas 畫 webcam
+    camera.drawCtx();
 
-  // canvas 畫 poses
-  const pose = poses && poses[0];
-  if (pose) {
-    camera.drawResult(pose);
-    camera.drawAngles();
+    // canvas 畫 poses
+    const pose = poses && poses[0];
+    if (pose) {
+      camera.drawResult(pose);
+      camera.drawAngles();
+    }
+
+    // 重新安排順序
+    _.sortBy(camera.canvas.getObjects(), "zIndex").forEach(obj => {
+      camera.canvas.bringToFront(obj);
+    });
   }
-
-  // 重新安排順序
-  _.sortBy(camera.canvas.getObjects(), "zIndex").forEach(obj => {
-    camera.canvas.bringToFront(obj);
-  });
 }
 
 // 建立 render loop
@@ -91,11 +98,13 @@ async function renderPrediction() {
   fabric.util.requestAnimFrame(async function render() {
     await renderResult(camera, detector);
 
-    // 檢查是否有碰到
-    game.checkIntersection();
+    if (!firstTime) {
+      // 檢查是否有碰到
+      game.checkIntersection();
 
-    // canvas render
-    camera.canvas.renderAll();
+      // canvas render
+      camera.canvas.renderAll();
+    }
 
     fabric.util.requestAnimFrame(render);
   });
