@@ -74,11 +74,10 @@ async function renderResult() {
   camera.drawCtx();
 
   // canvas 畫 poses
-  // The null check makes sure the UI is not in the middle of changing to a
-  // different model. If during model change, the result is from an old model,
-  // which shouldn't be rendered.
-  if (poses && poses.length > 0 && !STATE.isModelChanged) {
-    camera.drawResults(poses);
+  const pose = poses && poses[0];
+  if (pose) {
+    camera.drawResult(pose);
+    camera.drawAngles();
   }
 
   // 重新安排順序

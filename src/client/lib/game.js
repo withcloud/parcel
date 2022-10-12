@@ -355,6 +355,69 @@ export class Game {
     }, 4000);
   }
 
+  // async state3 () {
+  //   this.$menu2.show();
+  //   this.menuItem1.visible = true;
+  //   this.menuItem2.visible = true;
+  //   // 預設是 game1
+  //   this.menuSelected = "game1";
+  //   sound.click.play();
+
+  //   this.checkIntersectionHandle = () => {
+  //     const leftHand = this.camera.keypoints["left_wrist"];
+  //     const rightHand = this.camera.keypoints["right_wrist"];
+  //     let targetHand;
+  //     if (leftHand && leftHand.visible) {
+  //       targetHand = leftHand;
+  //     } else if (rightHand && rightHand.visible) {
+  //       targetHand = rightHand;
+  //     }
+
+  //     if (targetHand) {
+  //       if (targetHand.intersectsWithObject(this.menuItem1, true, true)) {
+  //         if (this.menuSelected !== "game1") {
+  //           this.menuSelected = "game1";
+  //           sound.click.play();
+  //         }
+  //       } else if (
+  //         targetHand.intersectsWithObject(this.menuItem2, true, true)
+  //       ) {
+  //         if (this.menuSelected !== "game2") {
+  //           this.menuSelected = "game2";
+  //           sound.click.play();
+  //         }
+  //       }
+  //     }
+
+  //     if (this.menuSelected === "game1") {
+  //       this.menuItem1.set("opacity", 1);
+  //       this.menuItem2.set("opacity", 0.5);
+  //     } else if (this.menuSelected === "game2") {
+  //       this.menuItem1.set("opacity", 0.5);
+  //       this.menuItem2.set("opacity", 1);
+  //     } else {
+  //       this.menuItem1.set("opacity", 0.5);
+  //       this.menuItem2.set("opacity", 0.5);
+  //     }
+  //   };
+
+  //   setTimeout(() => {
+  //     this.$menu.hide();
+  //     this.menuItem1.visible = false;
+  //     this.menuItem2.visible = false;
+  //     this.checkIntersectionHandle = null;
+  //     if (this.menuSelected === "game1") {
+  //       this.postState({
+  //         [`${this.name}.state`]: "state3"
+  //       });
+  //     } else {
+  //       this.postState({
+  //         [`${this.name}.state`]: "state4"
+  //       });
+  //     }
+  //   }, 4000);
+  // }
+
   async state3() {
     // 不斷做的事
     // 每隔幾秒

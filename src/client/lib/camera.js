@@ -132,28 +132,14 @@ export class Camera {
 
   /**
    * Draw the keypoints and skeleton on the video.
-   * @param poses A list of poses to render.
-   */
-  drawResults(poses) {
-    for (const pose of poses) {
-      pose.keypoints.forEach(kp => {
-        // if (kp.name.includes("left")) {
-        //   kp.name = kp.name.replace("left", "right");
-        // } else if (kp.name.includes("right")) {
-        //   kp.name = kp.name.replace("right", "left");
-        // }
-        kp.x = this.canvas.width - kp.x;
-      });
-      this.drawResult(pose);
-    }
-  }
-
-  /**
-   * Draw the keypoints and skeleton on the video.
    * @param pose A pose with keypoints to render.
    */
   drawResult(pose) {
     if (pose.keypoints != null) {
+      pose.keypoints.forEach(kp => {
+        kp.x = this.canvas.width - kp.x;
+      });
+
       this.drawKeypoints(pose.keypoints, pose.id);
       this.drawSkeleton(pose.keypoints, pose.id);
     }
@@ -238,7 +224,7 @@ export class Camera {
         const scoreThreshold = params.STATE.modelConfig.scoreThreshold || 0;
 
         // 若沒有，先建立
-        const name = kp1.name + "-" + kp2.name;
+        const name = kp1.name + "," + kp2.name;
         if (!this.skeletons[name]) {
           const line = new fabric.Line([kp1.x, kp1.y, kp2.x, kp2.y], {
             fill: color,
@@ -267,4 +253,167 @@ export class Camera {
         }
       });
   }
+
+  drawAngles() {
+    const angles = calcAngles(this.skeletons);
+    let t = "";
+    t += `1: ${angles[1]}\n`;
+    t += `2: ${angles[2]}\n`;
+    t += `3: ${angles[3]}\n`;
+    t += `4: ${angles[4]}\n`;
+    t += `5: ${angles[5]}\n`;
+    t += `6: ${angles[6]}\n`;
+    t += `7: ${angles[7]}\n`;
+    t += `8: ${angles[8]}\n`;
+    if (!this.text) {
+      var text = new fabric.Text(t, {
+        left: 0,
+        top: 60,
+        fontSize: 16,
+        textBackgroundColor: "rgb(255,255,255, 0.5)"
+      });
+      this.text = text;
+      this.canvas.add(text);
+      text.zIndex = 5;
+    }
+    this.text.set("text", t);
+    this.canvas.bringToFront(this.text);
+  }
+}
+
+function calcAngles(obj) {
+  const angles = [];
+
+  const line11 = obj["right_shoulder,right_elbow"];
+  const line12 = obj["right_elbow,right_wrist"];
+  if (line11 && line12 && line11.visible && line12.visible) {
+    angles[1] = calcAngle(
+      line12.x1,
+      line12.y1,
+      line12.x2,
+      line12.y2,
+      line11.x2,
+      line11.y2,
+      line11.x1,
+      line11.y1
+    );
+  }
+
+  const line21 = obj["left_shoulder,left_elbow"];
+  const line22 = obj["left_elbow,left_wrist"];
+  if (line21 && line22 && line21.visible && line22.visible) {
+    angles[2] = calcAngle(
+      line21.x2,
+      line21.y2,
+      line21.x1,
+      line21.y1,
+      line22.x1,
+      line22.y1,
+      line22.x2,
+      line22.y2
+    );
+  }
+
+  const line31 = obj["right_shoulder,right_elbow"];
+  const line32 = obj["right_shoulder,right_hip"];
+  if (line31 && line32 && line31.visible && line32.visible) {
+    angles[3] = calcAngle(
+      line32.x1,
+      line32.y1,
+      line32.x2,
+      line32.y2,
+      line31.x1,
+      line31.y1,
+      line31.x2,
+      line31.y2
+    );
+  }
+
+  const line41 = obj["left_shoulder,left_elbow"];
+  const line42 = obj["left_shoulder,left_hip"];
+  if (line41 && line42 && line41.visible && line42.visible) {
+    angles[4] = calcAngle(
+      line41.x1,
+      line41.y1,
+      line41.x2,
+      line41.y2,
+      line42.x1,
+      line42.y1,
+      line42.x2,
+      line42.y2
+    );
+  }
+
+  const line51 = obj["right_shoulder,right_hip"];
+  const line52 = obj["right_hip,right_knee"];
+  if (line51 && line52 && line51.visible && line52.visible) {
+    angles[5] = calcAngle(
+      line52.x1,
+      line52.y1,
+      line52.x2,
+      line52.y2,
+      line51.x2,
+      line51.y2,
+      line51.x1,
+      line51.y1
+    );
+  }
+
+  const line61 = obj["left_shoulder,left_hip"];
+  const line62 = obj["left_hip,left_knee"];
+  if (line61 && line62 && line61.visible && line62.visible) {
+    angles[6] = calcAngle(
+      line61.x2,
+      line61.y2,
+      line61.x1,
+      line61.y1,
+      line62.x1,
+      line62.y1,
+      line62.x2,
+      line62.y2
+    );
+  }
+
+  const line71 = obj["right_hip,right_knee"];
+  const line72 = obj["right_knee,right_ankle"];
+  if (line71 && line72 && line71.visible && line72.visible) {
+    angles[7] = calcAngle(
+      line71.x2,
+      line71.y2,
+      line71.x1,
+      line71.y1,
+      line72.x1,
+      line72.y1,
+      line72.x2,
+      line72.y2
+    );
+  }
+
+  const line81 = obj["left_hip,left_knee"];
+  const line82 = obj["left_knee,left_ankle"];
+  if (line81 && line82 && line81.visible && line82.visible) {
+    angles[8] = calcAngle(
+      line82.x1,
+      line82.y1,
+      line82.x2,
+      line82.y2,
+      line81.x2,
+      line81.y2,
+      line81.x1,
+      line81.y1
+    );
+  }
+
+  return angles;
+}
+
+function calcAngle(A1x, A1y, A2x, A2y, B1x, B1y, B2x, B2y) {
+  var dAx = A2x - A1x;
+  var dAy = A2y - A1y;
+  var dBx = B2x - B1x;
+  var dBy = B2y - B1y;
+  var angle = Math.atan2(dAx * dBy - dAy * dBx, dAx * dBx + dAy * dBy);
+  // if(angle < 0) {angle = angle * -1;}
+  var degree_angle = angle * (180 / Math.PI);
+  return parseInt(degree_angle);
 }
