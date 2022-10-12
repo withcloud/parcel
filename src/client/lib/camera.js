@@ -190,7 +190,7 @@ export class Camera {
       c.keypointName = keypoint.name;
       this.canvas.add(c);
       this.keypoints[keypoint.name] = c;
-      c.zIndex = 10;
+      c.zIndex = 8;
     }
 
     const c = this.keypoints[keypoint.name];
@@ -235,7 +235,7 @@ export class Camera {
           });
           this.canvas.add(line);
           this.skeletons[name] = line;
-          line.zIndex = 10;
+          line.zIndex = 8;
         }
 
         const line = this.skeletons[name];
@@ -266,18 +266,16 @@ export class Camera {
     t += `7: ${angles[7]}\n`;
     t += `8: ${angles[8]}\n`;
     if (!this.text) {
-      var text = new fabric.Text(t, {
+      this.text = new fabric.Text(t, {
         left: 0,
         top: 60,
         fontSize: 16,
         textBackgroundColor: "rgb(255,255,255, 0.5)"
       });
-      this.text = text;
-      this.canvas.add(text);
-      text.zIndex = 5;
+      this.canvas.add(this.text);
+      this.text.zIndex = 5;
     }
     this.text.set("text", t);
-    this.canvas.bringToFront(this.text);
   }
 }
 
