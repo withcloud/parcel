@@ -1,10 +1,11 @@
 import { fabric } from "fabric";
+import "@tensorflow/tfjs";
 import "@tensorflow/tfjs-backend-webgl";
 import * as posedetection from "@tensorflow-models/pose-detection";
 import _ from "lodash";
 
 import "./lib/import-jquery";
-import * as sound from "./lib/sound";
+// import * as sound from "./lib/sound";
 
 import { Camera } from "./lib/camera";
 import { STATE } from "./lib/params";
@@ -13,9 +14,10 @@ import {
   beginEstimatePosesStats,
   endEstimatePosesStats
 } from "./lib/stats_panel";
-import { Game } from "./lib/game";
+// import { Game } from "./lib/game";
+import { initDefaultValueMap, setBackendAndEnvFlags } from "./lib/util";
 
-fabric.Object.prototype.objectCaching = false;
+// fabric.Object.prototype.objectCaching = false;
 
 let detector;
 let camera;
@@ -45,16 +47,11 @@ async function renderResult() {
   let poses = null;
 
   // pose detect
-  // Detector can be null if initialization failed (for example when loading
-  // from a URL that does not exist).
   if (detector != null) {
     // 開始 fps
-    // FPS only counts the time it takes to finish estimatePoses.
     beginEstimatePosesStats();
 
     // 拿到 poses
-    // Detectors can throw errors, for example when using custom URLs that
-    // contain a model that doesn't provide the expected output.
     try {
       poses = await detector.estimatePoses(camera.video, {
         maxPoses: STATE.modelConfig.maxPoses,
@@ -75,9 +72,6 @@ async function renderResult() {
   }
 
   if (!firstTime) {
-    // 清除 canvas
-    // camera.canvas.clear();
-
     // canvas 畫 webcam
     camera.drawCtx();
 
@@ -103,19 +97,16 @@ async function renderResult() {
 
 // 建立 render loop
 async function renderPrediction() {
-  fabric.util.requestAnimFrame(async function render() {
-    await renderResult(camera, detector);
+  await renderResult();
 
-    if (!firstTime) {
-      // 檢查是否有碰到
-      // game.checkIntersection();
+  if (!firstTime) {
+    // 檢查是否有碰到
+    // game.checkIntersection();
+    // canvas render
+    camera.canvas.renderAll();
+  }
 
-      // canvas render
-      camera.canvas.renderAll();
-    }
-
-    fabric.util.requestAnimFrame(render);
-  });
+  requestAnimationFrame(renderPrediction);
 }
 
 // 主程式
@@ -125,6 +116,9 @@ async function app() {
 
   // 設好 camera
   window.camera = camera = await Camera.setupCamera(STATE.camera);
+
+  await initDefaultValueMap();
+  await setBackendAndEnvFlags(STATE.flags, STATE.backend);
 
   // 建立 detector
   detector = await createDetector();

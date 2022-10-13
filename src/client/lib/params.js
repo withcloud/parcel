@@ -11,7 +11,7 @@ export const STATE = {
       height: 480
     }
   },
-  backend: "",
+  backend: "tfjs-webgl",
   flags: {},
   modelConfig: {
     maxPoses: 1,
@@ -22,3 +22,5 @@ export const STATE = {
   },
   model: posedetection.SupportedModels.MoveNet
 };
+
+window.STATE = STATE;
