@@ -230,9 +230,9 @@ export class Game {
     // 遊戲流程
 
     // intro
-    this.postState({
-      [`${this.name}.state`]: "state1"
-    });
+    // this.postState({
+    //   [`${this.name}.state`]: "state1"
+    // });
   }
 
   startLoop() {
@@ -250,7 +250,7 @@ export class Game {
       // 根據 api 做相應的處理
       if (!this.data) return;
 
-      const nextState = this.data[this.name].state;
+      const nextState = this.data[this.name]?.state;
       if (nextState && nextState !== this.state) {
         this.state = nextState;
         if (this[this.state]) {

@@ -14,7 +14,7 @@ import {
   beginEstimatePosesStats,
   endEstimatePosesStats
 } from "./lib/stats_panel";
-// import { Game } from "./lib/game";
+import { Game } from "./lib/game";
 import { initDefaultValueMap, setBackendAndEnvFlags } from "./lib/util";
 
 // fabric.Object.prototype.objectCaching = false;
@@ -124,7 +124,7 @@ async function app() {
   detector = await createDetector();
 
   // 遊戲邏輯
-  // window.game = game = new Game(camera);
+  window.game = game = new Game(camera);
 
   // 開始 loop
   renderPrediction();
