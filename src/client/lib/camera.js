@@ -50,12 +50,15 @@ const COLOR_PALETTE = [
 ];
 export class Camera {
   constructor() {
+    this.text = document.getElementById("text");
     this.video = document.getElementById("video");
     this.canvas = new fabric.Canvas("output", { selection: false });
     this.ctx = this.canvas.getContext("2d");
     this.keypoints = {};
     this.skeletons = {};
     window.canvas = this.canvas;
+
+    this.lastRenderAnglesTime = Date.now();
   }
 
   /**
@@ -263,17 +266,24 @@ export class Camera {
     t += `6: ${angles[6]}\n`;
     t += `7: ${angles[7]}\n`;
     t += `8: ${angles[8]}\n`;
-    if (!this.text) {
-      this.text = new fabric.Text(t, {
-        left: 0,
-        top: 60,
-        fontSize: 16,
-        textBackgroundColor: "rgb(255,255,255, 0.5)"
-      });
-      this.canvas.add(this.text);
-      this.text.zIndex = 5;
+    // if (!this.text) {
+    //   this.text = new fabric.Text(t, {
+    //     left: 0,
+    //     top: 60,
+    //     fontSize: 16,
+    //     textBackgroundColor: "rgb(255,255,255, 0.5)"
+    //   });
+    //   this.canvas.add(this.text);
+    //   this.text.zIndex = 5;
+    // }
+    // this.text.set("text", t);
+    this.angles = angles;
+
+    const now = Date.now();
+    if (now - this.lastRenderAnglesTime > 1000) {
+      this.text.innerHTML = t;
+      this.lastRenderAnglesTime = now;
     }
-    this.text.set("text", t);
   }
 }
 

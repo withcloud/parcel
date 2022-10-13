@@ -79,7 +79,7 @@ async function renderResult() {
     const pose = poses && poses[0];
     if (pose) {
       camera.drawResult(pose);
-      // camera.drawAngles();
+      camera.drawAngles();
     }
 
     // // 重新安排順序
