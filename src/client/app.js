@@ -22,7 +22,6 @@ import { initDefaultValueMap, setBackendAndEnvFlags } from "./lib/util";
 let detector;
 let camera;
 let game;
-let firstTime = true;
 
 // 建立 post detector
 async function createDetector() {
@@ -65,46 +64,40 @@ async function renderResult() {
 
     // 結束 fps
     endEstimatePosesStats();
-
-    if (firstTime) {
-      firstTime = false;
-    }
   }
 
-  if (!firstTime) {
-    // canvas 畫 webcam
-    camera.drawCtx();
+  // canvas 畫 webcam
+  camera.drawCtx();
 
-    // canvas 畫 poses
-    const pose = poses && poses[0];
-    if (pose) {
-      camera.drawResult(pose);
-      camera.drawAngles();
-    }
-
-    // // 重新安排順序
-    // _.sortBy(camera.canvas.getObjects(), "zIndex").forEach(obj => {
-    //   camera.canvas.bringToFront(obj);
-    // });
-    // camera.canvas.bringToFront(game.menuItem1);
-    // camera.canvas.bringToFront(game.menuItem2);
-    // camera.canvas.bringToFront(game.rect1);
-    // camera.canvas.bringToFront(game.rect2);
-    // camera.canvas.bringToFront(game.rect3);
-    // camera.canvas.bringToFront(game.line);
+  // canvas 畫 poses
+  const pose = poses && poses[0];
+  if (pose) {
+    camera.drawResult(pose);
+    camera.drawAngles();
   }
+
+  // // 重新安排順序
+  // _.sortBy(camera.canvas.getObjects(), "zIndex").forEach(obj => {
+  //   camera.canvas.bringToFront(obj);
+  // });
+  // camera.canvas.bringToFront(game.menuItem1);
+  // camera.canvas.bringToFront(game.menuItem2);
+  // camera.canvas.bringToFront(game.rect1);
+  // camera.canvas.bringToFront(game.rect2);
+  // camera.canvas.bringToFront(game.rect3);
+  // camera.canvas.bringToFront(game.line);
 }
 
 // 建立 render loop
 async function renderPrediction() {
   await renderResult();
 
-  if (!firstTime) {
-    // 檢查是否有碰到
-    // game.checkIntersection();
-    // canvas render
-    camera.canvas.renderAll();
-  }
+  // if (!firstTime)
+
+  // 檢查是否有碰到
+  // game.checkIntersection();
+  // canvas render
+  camera.canvas.renderAll();
 
   requestAnimationFrame(renderPrediction);
 }
