@@ -219,7 +219,9 @@ export class Camera {
         fill: color,
         stroke: "white",
         originX: "center",
-        originY: "center"
+        originY: "center",
+        objectCaching: false,
+        selectable: false
       });
       c.poseId = poseId;
       c.keypointName = keypoint.name;
@@ -269,8 +271,9 @@ export class Camera {
           fill: color,
           stroke: color,
           strokeWidth: 2,
-          selectable: false,
-          evented: false
+          evented: false,
+          objectCaching: false,
+          selectable: false
         });
         this.canvas.add(line);
         this.skeletons[name] = line;
