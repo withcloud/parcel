@@ -162,7 +162,7 @@ export class Camera {
       });
       this.canvas.add(this.webcamImage);
       this.webcamImage.zIndex = 0;
-      await wait(200);
+      await wait(100);
     }
   }
 
@@ -225,7 +225,7 @@ export class Camera {
       this.canvas.add(c);
       this.keypoints[keypoint.name] = c;
       c.zIndex = 8;
-      await wait(200);
+      await wait(100);
     }
 
     const c = this.keypoints[keypoint.name];
@@ -273,7 +273,7 @@ export class Camera {
         this.canvas.add(line);
         this.skeletons[name] = line;
         line.zIndex = 8;
-        await wait(200);
+        await wait(100);
       }
 
       const line = this.skeletons[name];

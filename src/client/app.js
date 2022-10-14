@@ -109,7 +109,7 @@ async function renderPrediction() {
 
   if (canRender) {
     // canvas render
-    camera.canvas.renderAll();
+    // camera.canvas.requestRenderAll();
   }
 
   requestAnimationFrame(renderPrediction);
