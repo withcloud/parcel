@@ -83,11 +83,45 @@ export class Camera {
         height: sizeOption.height,
         frameRate: {
           ideal: targetFPS
-        }
+        },
+        deviceId: window.search.deviceId
+          ? { exact: window.search.deviceId }
+          : undefined
       }
     };
 
-    const stream = await navigator.mediaDevices.getUserMedia(videoConfig);
+    let stream = await navigator.mediaDevices.getUserMedia(videoConfig);
+    window.stream = stream;
+
+    // 查看 device id
+    const deviceInfos = await navigator.mediaDevices.enumerateDevices();
+    console.log(deviceInfos);
+    window.deviceInfos = deviceInfos;
+
+    let audios = [];
+    let videos = [];
+    for (const deviceInfo of deviceInfos) {
+      const option = {};
+      option.value = deviceInfo.deviceId;
+      if (deviceInfo.kind === "audioinput") {
+        option.text = deviceInfo.label || `Microphone ${audios.length + 1}`;
+        audios.push(option);
+      } else if (deviceInfo.kind === "videoinput") {
+        option.text = deviceInfo.label || `Camera ${audios.length + 1}`;
+        videos.push(option);
+      }
+    }
+    window.audios = audios;
+    window.videos = videos;
+    console.log(window.audios);
+    console.log(window.videos);
+
+    if (!window.search.deviceId) {
+      alert("deviceId not found");
+      await new Promise(resolve => {
+        setTimeout(resolve, 1000 * 60 * 60 * 24);
+      });
+    }
 
     const camera = new Camera();
     camera.video.srcObject = stream;
