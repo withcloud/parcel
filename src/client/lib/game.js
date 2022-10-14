@@ -142,14 +142,29 @@ export class Game {
     this.data = null;
     this.name = window.search.name || "p1";
     this.state = "";
-
-    // this.start();
   }
 
-  async start() {
+  start() {
     // api 不斷讀取
     this.startLoop();
 
+    // 設置好常用的 div
+    // 暫時不用的可以先用 jquery 隱藏掉
+
+    this.$intro = $("#intro");
+    this.$intro.hide();
+    this.$menu = $("#menu");
+    this.$menu.hide();
+
+    // 遊戲流程
+
+    // intro
+    this.postState({
+      [`${this.name}.state`]: "state1"
+    });
+  }
+
+  setupCanvasObjects() {
     // 設置好常用的 canvas object
     // 暫時不用的可以設 visible 為 false
     this.menuItem1 = new fabric.Rect({
@@ -218,21 +233,6 @@ export class Game {
     this.rect1.visible = false;
     this.rect2.visible = false;
     this.rect3.visible = false;
-
-    // 設置好常用的 div
-    // 暫時不用的可以先用 jquery 隱藏掉
-
-    this.$intro = $("#intro");
-    this.$intro.hide();
-    this.$menu = $("#menu");
-    this.$menu.hide();
-
-    // 遊戲流程
-
-    // intro
-    // this.postState({
-    //   [`${this.name}.state`]: "state1"
-    // });
   }
 
   startLoop() {
@@ -300,7 +300,10 @@ export class Game {
     this.menuSelected = "game1";
     sound.click.play();
 
+    let lastCheck = Date.now();
     this.checkIntersectionHandle = () => {
+      if (Date.now() - lastCheck < 200) return;
+
       const leftHand = this.camera.keypoints["left_wrist"];
       const rightHand = this.camera.keypoints["right_wrist"];
       let targetHand;
@@ -315,6 +318,7 @@ export class Game {
           if (this.menuSelected !== "game1") {
             this.menuSelected = "game1";
             sound.click.play();
+            lastCheck = Date.now();
           }
         } else if (
           targetHand.intersectsWithObject(this.menuItem2, true, true)
@@ -322,6 +326,7 @@ export class Game {
           if (this.menuSelected !== "game2") {
             this.menuSelected = "game2";
             sound.click.play();
+            lastCheck = Date.now();
           }
         }
       }

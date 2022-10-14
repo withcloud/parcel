@@ -79,7 +79,7 @@ async function renderPrediction() {
   await renderResult();
 
   // 檢查是否有碰到
-  // game.checkIntersection();
+  game.checkIntersection();
   // canvas render
   camera.canvas.requestRenderAll();
 
@@ -109,7 +109,9 @@ async function app() {
   window.game = game = new Game(camera);
 
   camera.setupCanvasObjects();
-  // game.setupCanvasObjects();
+  game.setupCanvasObjects();
+
+  game.start();
 
   // 開始 loop
   renderPrediction();
