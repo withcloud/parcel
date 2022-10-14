@@ -76,14 +76,16 @@ async function renderResult() {
     }
   }
 
-  // canvas 畫 webcam
-  await camera.drawCtx();
+  if (canRender) {
+    // canvas 畫 webcam
+    await camera.drawCtx();
 
-  // canvas 畫 poses
-  const pose = poses && poses[0];
-  if (pose) {
-    await camera.drawResult(pose);
-    await camera.drawAngles();
+    // canvas 畫 poses
+    const pose = poses && poses[0];
+    if (pose) {
+      await camera.drawResult(pose);
+      await camera.drawAngles();
+    }
   }
 
   // // 重新安排順序
