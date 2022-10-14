@@ -150,21 +150,188 @@ export class Camera {
     return camera;
   }
 
-  async drawCtx() {
-    if (!this.webcamImage) {
-      this.webcamImage = new fabric.Image(this.video, {
-        left: 0,
-        top: 0,
+  setupCanvasObjects() {
+    this.webcamImage = new fabric.Image(this.video, {
+      left: 0,
+      top: 0,
+      objectCaching: false,
+      selectable: false,
+      hoverCursor: "default",
+      flipX: true
+    });
+    this.canvas.add(this.webcamImage);
+    this.webcamImage.zIndex = 0;
+
+    const keypoints = [
+      { key: "nose", x: 321.1714486608809, y: 69.27845376056568 },
+      { key: "left_eye", x: 312.5737016684717, y: 60.40401521600088 },
+      { key: "left_ear", x: 306.1615931664136, y: 67.72593275154101 },
+      { key: "left_shoulder", x: 285.6424011819502, y: 120.37349587262328 },
+      { key: "left_elbow", x: 262.8932517686212, y: 185.90749724590802 },
+      { key: "left_wrist", x: 254.0534185314233, y: 236.3666420149043 },
+      { key: "left_hip", x: 300.98320318717384, y: 257.3983293087912 },
+      { key: "left_knee", x: 292.6207436919961, y: 354.79140469875375 },
+      { key: "left_ankle", x: 282.0647667840646, y: 422.89684171640425 },
+      { key: "right_eye", x: 330.1192676127817, y: 61.59546395552639 },
+      { key: "right_ear", x: 344.14965868115553, y: 70.13012397148042 },
+      { key: "right_shoulder", x: 373.72537015381164, y: 117.17275512873869 },
+      { key: "right_elbow", x: 389.1451043473787, y: 183.68152693301627 },
+      { key: "right_wrist", x: 401.8436716010829, y: 233.24806604143765 },
+      { key: "right_hip", x: 355.6434497439315, y: 257.652027433169 },
+      { key: "right_knee", x: 372.4374681545515, y: 355.0741245796427 },
+      { key: "right_ankle", x: 379.8362369533651, y: 434.69482907758584 }
+    ];
+
+    keypoints.forEach(keypoint => {
+      const c = new fabric.Circle({
+        left: keypoint.x,
+        top: keypoint.y,
+        strokeWidth: 2,
+        radius: 4,
+        fill: "black",
+        stroke: "white",
+        originX: "center",
+        originY: "center",
         objectCaching: false,
-        selectable: false,
-        hoverCursor: "default",
-        flipX: true
+        selectable: false
       });
-      this.canvas.add(this.webcamImage);
-      this.webcamImage.zIndex = 0;
-      this.canvas.renderAll();
-      await wait(100);
-    }
+      c.poseId = 0;
+      c.keypointName = keypoint.name;
+      this.canvas.add(c);
+      this.keypoints[keypoint.key] = c;
+      c.zIndex = 8;
+    });
+
+    const skeletons = [
+      {
+        key: "nose,left_eye",
+        x1: 321.1714486608809,
+        y1: 69.27845376056568,
+        x2: 312.5737016684717,
+        y2: 60.40401521600088
+      },
+      {
+        key: "nose,right_eye",
+        x1: 321.1714486608809,
+        y1: 69.27845376056568,
+        x2: 330.1192676127817,
+        y2: 61.59546395552639
+      },
+      {
+        key: "left_eye,left_ear",
+        x1: 312.5737016684717,
+        y1: 60.40401521600088,
+        x2: 306.1615931664136,
+        y2: 67.72593275154101
+      },
+      {
+        key: "right_eye,right_ear",
+        x1: 330.1192676127817,
+        y1: 61.59546395552639,
+        x2: 344.14965868115553,
+        y2: 70.13012397148042
+      },
+      {
+        key: "left_shoulder,right_shoulder",
+        x1: 285.6424011819502,
+        y1: 120.37349587262328,
+        x2: 373.72537015381164,
+        y2: 117.17275512873869
+      },
+      {
+        key: "left_shoulder,left_elbow",
+        x1: 285.6424011819502,
+        y1: 120.37349587262328,
+        x2: 262.8932517686212,
+        y2: 185.90749724590802
+      },
+      {
+        key: "left_shoulder,left_hip",
+        x1: 285.6424011819502,
+        y1: 120.37349587262328,
+        x2: 300.98320318717384,
+        y2: 257.3983293087912
+      },
+      {
+        key: "right_shoulder,right_elbow",
+        x1: 373.72537015381164,
+        y1: 117.17275512873869,
+        x2: 389.1451043473787,
+        y2: 183.68152693301627
+      },
+      {
+        key: "right_shoulder,right_hip",
+        x1: 373.72537015381164,
+        y1: 117.17275512873869,
+        x2: 355.6434497439315,
+        y2: 257.652027433169
+      },
+      {
+        key: "left_elbow,left_wrist",
+        x1: 262.8932517686212,
+        y1: 185.90749724590802,
+        x2: 254.0534185314233,
+        y2: 236.3666420149043
+      },
+      {
+        key: "right_elbow,right_wrist",
+        x1: 389.1451043473787,
+        y1: 183.68152693301627,
+        x2: 401.8436716010829,
+        y2: 233.24806604143765
+      },
+      {
+        key: "left_hip,right_hip",
+        x1: 300.98320318717384,
+        y1: 257.3983293087912,
+        x2: 355.6434497439315,
+        y2: 257.652027433169
+      },
+      {
+        key: "left_hip,left_knee",
+        x1: 300.98320318717384,
+        y1: 257.3983293087912,
+        x2: 292.6207436919961,
+        y2: 354.79140469875375
+      },
+      {
+        key: "right_hip,right_knee",
+        x1: 355.6434497439315,
+        y1: 257.652027433169,
+        x2: 372.4374681545515,
+        y2: 355.0741245796427
+      },
+      {
+        key: "left_knee,left_ankle",
+        x1: 292.6207436919961,
+        y1: 354.79140469875375,
+        x2: 282.0647667840646,
+        y2: 422.89684171640425
+      },
+      {
+        key: "right_knee,right_ankle",
+        x1: 372.4374681545515,
+        y1: 355.0741245796427,
+        x2: 379.8362369533651,
+        y2: 434.69482907758584
+      }
+    ];
+
+    skeletons.forEach(({ key, x1, y1, x2, y2 }) => {
+      const line = new fabric.Line([x1, y1, x2, y2], {
+        fill: "black",
+        stroke: "black",
+        strokeWidth: 2,
+        evented: false,
+        objectCaching: false,
+        selectable: false
+      });
+      this.canvas.add(line);
+      this.skeletons[key] = line;
+      line.zIndex = 8;
+    });
+
+    this.canvas.requestRenderAll();
   }
 
   /**
@@ -209,29 +376,6 @@ export class Camera {
     const score = keypoint.score != null ? keypoint.score : 1;
     const scoreThreshold = params.STATE.modelConfig.scoreThreshold || 0;
 
-    // 若沒有，先建立
-    if (!this.keypoints[keypoint.name]) {
-      const c = new fabric.Circle({
-        left: keypoint.x,
-        top: keypoint.y,
-        strokeWidth: 2,
-        radius: 4,
-        fill: color,
-        stroke: "white",
-        originX: "center",
-        originY: "center",
-        objectCaching: false,
-        selectable: false
-      });
-      c.poseId = poseId;
-      c.keypointName = keypoint.name;
-      this.canvas.add(c);
-      this.keypoints[keypoint.name] = c;
-      c.zIndex = 8;
-      this.canvas.renderAll();
-      await wait(100);
-    }
-
     const c = this.keypoints[keypoint.name];
 
     if (score >= scoreThreshold) {
@@ -266,24 +410,7 @@ export class Camera {
       const score2 = kp2.score != null ? kp2.score : 1;
       const scoreThreshold = params.STATE.modelConfig.scoreThreshold || 0;
 
-      // 若沒有，先建立
       const name = kp1.name + "," + kp2.name;
-      if (!this.skeletons[name]) {
-        const line = new fabric.Line([kp1.x, kp1.y, kp2.x, kp2.y], {
-          fill: color,
-          stroke: color,
-          strokeWidth: 2,
-          evented: false,
-          objectCaching: false,
-          selectable: false
-        });
-        this.canvas.add(line);
-        this.skeletons[name] = line;
-        line.zIndex = 8;
-        this.canvas.renderAll();
-        await wait(100);
-      }
-
       const line = this.skeletons[name];
 
       if (score1 >= scoreThreshold && score2 >= scoreThreshold) {
