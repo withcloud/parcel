@@ -230,9 +230,9 @@ export class Game {
     // 遊戲流程
 
     // intro
-    // this.postState({
-    //   [`${this.name}.state`]: "state1"
-    // });
+    this.postState({
+      [`${this.name}.state`]: "state1"
+    });
   }
 
   startLoop() {
@@ -288,7 +288,7 @@ export class Game {
       this.postState({
         [`${this.name}.state`]: "state2"
       });
-    }, 2000);
+    }, 10000);
   }
 
   // 主目錄
@@ -338,21 +338,21 @@ export class Game {
       }
     };
 
-    setTimeout(() => {
-      this.$menu.hide();
-      this.menuItem1.visible = false;
-      this.menuItem2.visible = false;
-      this.checkIntersectionHandle = null;
-      if (this.menuSelected === "game1") {
-        this.postState({
-          [`${this.name}.state`]: "state3"
-        });
-      } else {
-        this.postState({
-          [`${this.name}.state`]: "state4"
-        });
-      }
-    }, 4000);
+    // setTimeout(() => {
+    //   this.$menu.hide();
+    //   this.menuItem1.visible = false;
+    //   this.menuItem2.visible = false;
+    //   this.checkIntersectionHandle = null;
+    //   if (this.menuSelected === "game1") {
+    //     this.postState({
+    //       [`${this.name}.state`]: "state3"
+    //     });
+    //   } else {
+    //     this.postState({
+    //       [`${this.name}.state`]: "state4"
+    //     });
+    //   }
+    // }, 4000);
   }
 
   // async state3 () {
