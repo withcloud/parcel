@@ -240,6 +240,8 @@ export class Camera {
       c.top = keypoint.y;
     } else {
       c.visible = false;
+      c.left = keypoint.x;
+      c.top = keypoint.y;
     }
   }
 
@@ -294,6 +296,12 @@ export class Camera {
         });
       } else {
         line.visible = false;
+        line.set({
+          x1: kp1.x,
+          y1: kp1.y,
+          x2: kp2.x,
+          y2: kp2.y
+        });
       }
     }
   }

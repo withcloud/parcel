@@ -105,10 +105,10 @@ async function renderPrediction() {
   await renderResult();
 
   if (canRender) {
-    // // 檢查是否有碰到
-    // game.checkIntersection();
-    // // canvas render
-    // camera.canvas.requestRenderAll();
+    // 檢查是否有碰到
+    game.checkIntersection();
+    // canvas render
+    camera.canvas.requestRenderAll();
   }
 
   requestAnimationFrame(renderPrediction);
