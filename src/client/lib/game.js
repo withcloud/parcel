@@ -230,9 +230,9 @@ export class Game {
     // 遊戲流程
 
     // intro
-    this.postState({
-      [`${this.name}.state`]: "state1"
-    });
+    // this.postState({
+    //   [`${this.name}.state`]: "state1"
+    // });
   }
 
   startLoop() {
