@@ -196,7 +196,7 @@ export class Camera {
         selectable: false
       });
       c.poseId = 0;
-      c.keypointName = keypoint.name;
+      c.keypointName = keypoint.key;
       this.canvas.add(c);
       this.keypoints[keypoint.key] = c;
       c.zIndex = 8;

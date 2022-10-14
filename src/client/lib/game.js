@@ -343,85 +343,22 @@ export class Game {
       }
     };
 
-    // setTimeout(() => {
-    //   this.$menu.hide();
-    //   this.menuItem1.visible = false;
-    //   this.menuItem2.visible = false;
-    //   this.checkIntersectionHandle = null;
-    //   if (this.menuSelected === "game1") {
-    //     this.postState({
-    //       [`${this.name}.state`]: "state3"
-    //     });
-    //   } else {
-    //     this.postState({
-    //       [`${this.name}.state`]: "state4"
-    //     });
-    //   }
-    // }, 4000);
+    setTimeout(() => {
+      this.$menu.hide();
+      this.menuItem1.visible = false;
+      this.menuItem2.visible = false;
+      this.checkIntersectionHandle = null;
+      if (this.menuSelected === "game1") {
+        this.postState({
+          [`${this.name}.state`]: "state3"
+        });
+      } else {
+        this.postState({
+          [`${this.name}.state`]: "state3"
+        });
+      }
+    }, 4000);
   }
-
-  // async state3 () {
-  //   this.$menu2.show();
-  //   this.menuItem1.visible = true;
-  //   this.menuItem2.visible = true;
-  //   // 預設是 game1
-  //   this.menuSelected = "game1";
-  //   sound.click.play();
-
-  //   this.checkIntersectionHandle = () => {
-  //     const leftHand = this.camera.keypoints["left_wrist"];
-  //     const rightHand = this.camera.keypoints["right_wrist"];
-  //     let targetHand;
-  //     if (leftHand && leftHand.visible) {
-  //       targetHand = leftHand;
-  //     } else if (rightHand && rightHand.visible) {
-  //       targetHand = rightHand;
-  //     }
-
-  //     if (targetHand) {
-  //       if (targetHand.intersectsWithObject(this.menuItem1, true, true)) {
-  //         if (this.menuSelected !== "game1") {
-  //           this.menuSelected = "game1";
-  //           sound.click.play();
-  //         }
-  //       } else if (
-  //         targetHand.intersectsWithObject(this.menuItem2, true, true)
-  //       ) {
-  //         if (this.menuSelected !== "game2") {
-  //           this.menuSelected = "game2";
-  //           sound.click.play();
-  //         }
-  //       }
-  //     }
-
-  //     if (this.menuSelected === "game1") {
-  //       this.menuItem1.set("opacity", 1);
-  //       this.menuItem2.set("opacity", 0.5);
-  //     } else if (this.menuSelected === "game2") {
-  //       this.menuItem1.set("opacity", 0.5);
-  //       this.menuItem2.set("opacity", 1);
-  //     } else {
-  //       this.menuItem1.set("opacity", 0.5);
-  //       this.menuItem2.set("opacity", 0.5);
-  //     }
-  //   };
-
-  //   setTimeout(() => {
-  //     this.$menu.hide();
-  //     this.menuItem1.visible = false;
-  //     this.menuItem2.visible = false;
-  //     this.checkIntersectionHandle = null;
-  //     if (this.menuSelected === "game1") {
-  //       this.postState({
-  //         [`${this.name}.state`]: "state3"
-  //       });
-  //     } else {
-  //       this.postState({
-  //         [`${this.name}.state`]: "state4"
-  //       });
-  //     }
-  //   }, 4000);
-  // }
 
   async state3() {
     // 不斷做的事
@@ -430,7 +367,7 @@ export class Game {
     // 再隔一秒
     // 線變實線
     // 判斷距離
-    await this.startLineLevelGame(10);
+    await this.startLineLevelGame(1000);
   }
 
   async state4() {
@@ -440,7 +377,6 @@ export class Game {
   async startLineLevelGame(times) {
     for (let i = 0; i < times; i++) {
       // reset
-      this.checkIntersectionHandle = null;
       this.rect1.visible = true;
       this.rect2.visible = true;
       this.rect3.visible = true;
@@ -494,39 +430,37 @@ export class Game {
       sound.click.play();
       // 變成實線
       this.line.set("stroke", "rgba(255,0,0,1)");
+
+      // 等 0.2 秒
+      await wait(200);
+
       // 並開始計算碰撞
+      // 判定只有一次
       let kit = false;
       let dx1 = 0;
       let dx2 = 0;
       let dy1 = 0;
       let dy2 = 0;
-      this.checkIntersectionHandle = () => {
-        if (kit) return;
-        Object.keys(this.camera.keypoints).forEach(key => {
-          const kp = this.camera.keypoints[key];
-          if (kp.visible) {
-            const d = getDxDy(kp.left, kp.top, x1, y1, x2, y2);
-            if (d.dx > 0) {
-              dx1++;
-            } else if (d.dx < 0) {
-              dx2++;
-            }
-            if (d.dy > 0) {
-              dy1++;
-            } else if (d.dy < 0) {
-              dy2++;
-            }
+      Object.keys(this.camera.keypoints).forEach(key => {
+        const kp = this.camera.keypoints[key];
+        if (kp.visible) {
+          const d = getDxDy(kp.left, kp.top, x1, y1, x2, y2);
+          if (d.dx > 0) {
+            dx1++;
+          } else if (d.dx < 0) {
+            dx2++;
           }
-        });
-        if ((dx1 > 0 && dx2 > 0) || (dy1 > 0 && dy2 > 0)) {
-          kit = true;
+          if (d.dy > 0) {
+            dy1++;
+          } else if (d.dy < 0) {
+            dy2++;
+          }
         }
-      };
+      });
+      if ((dx1 > 0 && dx2 > 0) || (dy1 > 0 && dy2 > 0)) {
+        kit = true;
+      }
 
-      // 等 0.2 秒
-      await wait(200);
-      // 解決判定
-      this.checkIntersectionHandle = null;
       // 變回綠色
       this.line.set("stroke", "rgba(0,255,0,0.5)");
 
