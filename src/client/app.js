@@ -104,15 +104,7 @@ async function renderPrediction() {
 
 // 主程式
 async function app() {
-  const search = location.search.substring(1);
-  const searchObj = JSON.parse(
-    '{"' +
-      decodeURI(search)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"') +
-      '"}'
-  );
+  const searchObj = Object.fromEntries(new URLSearchParams(location.search));
   window.search = {
     ...searchObj
   };
