@@ -23,6 +23,7 @@ let detector;
 let camera;
 let game;
 let firstTime = true;
+let canRender = false;
 
 // 建立 post detector
 async function createDetector() {
@@ -68,19 +69,21 @@ async function renderResult() {
 
     if (firstTime) {
       firstTime = false;
+      setTimeout(() => {
+        canRender = true;
+        game.start();
+      }, 4000);
     }
   }
 
-  if (!firstTime) {
-    // canvas 畫 webcam
-    await camera.drawCtx();
+  // canvas 畫 webcam
+  await camera.drawCtx();
 
-    // canvas 畫 poses
-    const pose = poses && poses[0];
-    if (pose) {
-      await camera.drawResult(pose);
-      await camera.drawAngles();
-    }
+  // canvas 畫 poses
+  const pose = poses && poses[0];
+  if (pose) {
+    await camera.drawResult(pose);
+    await camera.drawAngles();
   }
 
   // // 重新安排順序
@@ -99,9 +102,10 @@ async function renderResult() {
 async function renderPrediction() {
   await renderResult();
 
-  if (!firstTime) {
-    // 檢查是否有碰到
-    // game.checkIntersection();
+  // 檢查是否有碰到
+  // game.checkIntersection();
+
+  if (canRender) {
     // canvas render
     camera.canvas.renderAll();
   }

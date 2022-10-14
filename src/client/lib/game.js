@@ -143,7 +143,7 @@ export class Game {
     this.name = window.search.name || "p1";
     this.state = "";
 
-    this.start();
+    // this.start();
   }
 
   async start() {
