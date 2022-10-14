@@ -118,9 +118,7 @@ export class Camera {
 
     if (!window.search.deviceId) {
       alert("deviceId not found");
-      await new Promise(resolve => {
-        setTimeout(resolve, 1000 * 60 * 60 * 24);
-      });
+      await wait(1000 * 60 * 60 * 24);
     }
 
     const camera = new Camera();
@@ -152,7 +150,7 @@ export class Camera {
     return camera;
   }
 
-  drawCtx() {
+  async drawCtx() {
     if (!this.webcamImage) {
       this.webcamImage = new fabric.Image(this.video, {
         left: 0,
@@ -164,6 +162,7 @@ export class Camera {
       });
       this.canvas.add(this.webcamImage);
       this.webcamImage.zIndex = 0;
+      await wait(200);
     }
   }
 
@@ -171,14 +170,14 @@ export class Camera {
    * Draw the keypoints and skeleton on the video.
    * @param pose A pose with keypoints to render.
    */
-  drawResult(pose) {
+  async drawResult(pose) {
     if (pose.keypoints != null) {
       pose.keypoints.forEach(kp => {
         kp.x = this.canvas.width - kp.x;
       });
 
-      this.drawKeypoints(pose.keypoints, pose.id);
-      this.drawSkeleton(pose.keypoints, pose.id);
+      await this.drawKeypoints(pose.keypoints, pose.id);
+      await this.drawSkeleton(pose.keypoints, pose.id);
     }
   }
 
@@ -186,25 +185,25 @@ export class Camera {
    * Draw the keypoints on the video.
    * @param keypoints A list of keypoints.
    */
-  drawKeypoints(keypoints, poseId) {
+  async drawKeypoints(keypoints, poseId) {
     const keypointInd = posedetection.util.getKeypointIndexBySide(
       params.STATE.model
     );
 
     for (const i of keypointInd.middle) {
-      this.drawKeypoint(keypoints[i], "red", poseId);
+      await this.drawKeypoint(keypoints[i], "red", poseId);
     }
 
     for (const i of keypointInd.left) {
-      this.drawKeypoint(keypoints[i], "green", poseId);
+      await this.drawKeypoint(keypoints[i], "green", poseId);
     }
 
     for (const i of keypointInd.right) {
-      this.drawKeypoint(keypoints[i], "orange", poseId);
+      await this.drawKeypoint(keypoints[i], "orange", poseId);
     }
   }
 
-  drawKeypoint(keypoint, color, poseId) {
+  async drawKeypoint(keypoint, color, poseId) {
     // If score is null, just show the keypoint.
     const score = keypoint.score != null ? keypoint.score : 1;
     const scoreThreshold = params.STATE.modelConfig.scoreThreshold || 0;
@@ -226,6 +225,7 @@ export class Camera {
       this.canvas.add(c);
       this.keypoints[keypoint.name] = c;
       c.zIndex = 8;
+      await wait(200);
     }
 
     const c = this.keypoints[keypoint.name];
@@ -243,53 +243,56 @@ export class Camera {
    * Draw the skeleton of a body on the video.
    * @param keypoints A list of keypoints.
    */
-  drawSkeleton(keypoints, poseId) {
+  async drawSkeleton(keypoints, poseId) {
     // Each poseId is mapped to a color in the color palette.
     const color = "White";
 
-    posedetection.util
-      .getAdjacentPairs(params.STATE.model)
-      .forEach(([i, j]) => {
-        const kp1 = keypoints[i];
-        const kp2 = keypoints[j];
+    const arr = posedetection.util.getAdjacentPairs(params.STATE.model);
 
-        // If score is null, just show the keypoint.
-        const score1 = kp1.score != null ? kp1.score : 1;
-        const score2 = kp2.score != null ? kp2.score : 1;
-        const scoreThreshold = params.STATE.modelConfig.scoreThreshold || 0;
+    for (let k = 0; k < arr.length; k++) {
+      const [i, j] = arr[k];
 
-        // 若沒有，先建立
-        const name = kp1.name + "," + kp2.name;
-        if (!this.skeletons[name]) {
-          const line = new fabric.Line([kp1.x, kp1.y, kp2.x, kp2.y], {
-            fill: color,
-            stroke: color,
-            strokeWidth: 2,
-            selectable: false,
-            evented: false
-          });
-          this.canvas.add(line);
-          this.skeletons[name] = line;
-          line.zIndex = 8;
-        }
+      const kp1 = keypoints[i];
+      const kp2 = keypoints[j];
 
-        const line = this.skeletons[name];
+      // If score is null, just show the keypoint.
+      const score1 = kp1.score != null ? kp1.score : 1;
+      const score2 = kp2.score != null ? kp2.score : 1;
+      const scoreThreshold = params.STATE.modelConfig.scoreThreshold || 0;
 
-        if (score1 >= scoreThreshold && score2 >= scoreThreshold) {
-          line.visible = true;
-          line.set({
-            x1: kp1.x,
-            y1: kp1.y,
-            x2: kp2.x,
-            y2: kp2.y
-          });
-        } else {
-          line.visible = false;
-        }
-      });
+      // 若沒有，先建立
+      const name = kp1.name + "," + kp2.name;
+      if (!this.skeletons[name]) {
+        const line = new fabric.Line([kp1.x, kp1.y, kp2.x, kp2.y], {
+          fill: color,
+          stroke: color,
+          strokeWidth: 2,
+          selectable: false,
+          evented: false
+        });
+        this.canvas.add(line);
+        this.skeletons[name] = line;
+        line.zIndex = 8;
+        await wait(200);
+      }
+
+      const line = this.skeletons[name];
+
+      if (score1 >= scoreThreshold && score2 >= scoreThreshold) {
+        line.visible = true;
+        line.set({
+          x1: kp1.x,
+          y1: kp1.y,
+          x2: kp2.x,
+          y2: kp2.y
+        });
+      } else {
+        line.visible = false;
+      }
+    }
   }
 
-  drawAngles() {
+  async drawAngles() {
     const angles = calcAngles(this.skeletons);
     let t = "";
     t += `1: ${angles[1]}\n`;
@@ -456,4 +459,10 @@ function calcAngle(A1x, A1y, A2x, A2y, B1x, B1y, B2x, B2y) {
   // if(angle < 0) {angle = angle * -1;}
   var degree_angle = angle * (180 / Math.PI);
   return parseInt(degree_angle);
+}
+
+async function wait(time) {
+  return new Promise(resolve => {
+    setTimeout(resolve, time);
+  });
 }
