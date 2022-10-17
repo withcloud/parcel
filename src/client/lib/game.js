@@ -160,12 +160,47 @@ export class Game {
     this.$menuItem1 = $("#menu-item1");
     this.$menuItem2 = $("#menu-item2");
     this.$canvasWrapper = $("#canvas-wrapper");
+    this.$menuCountdown = $("#menu-countdown");
+    this.$menuItem3 = $("#menu-item3");
+    this.$menuItem4 = $("#menu-item4");
+    this.$menuCountdown2 = $("#menu-countdown2");
+    this.$menu2 = $("#menu2");
+    this.$menuBg2 = $("#menu-bg2");
+    this.$menu2.hide();
+    this.$menuBg2.hide();
+    this.$singleBg = $("#single-bg");
+    this.$singleBg.hide();
+    this.$single = $("#single");
+    this.$single.hide();
+    this.$singleScore = $("#single-score");
+    this.$singleCountdown = $("#single-countdown");
+    this.$singleLevel = $("#single-level");
+    this.$singlePassed1 = $("#single-passed1");
+    this.$singlePassed2 = $("#single-passed2");
+    this.$singlePassed3 = $("#single-passed3");
+    this.$singlePassed4 = $("#single-passed4");
+    this.$singlePassed5 = $("#single-passed5");
+    this.$singleLevelup = $("#single-levelup");
+    this.$singleSmash = $("#single-smash");
+    this.$singleTimesup = $("#single-timesup");
+    this.$singleLevelup.hide();
+    this.$singleSmash.hide();
+    this.$singleTimesup.hide();
 
     // 遊戲流程
 
     // menu
     this.postState({
-      [`${this.name}.state`]: "state2"
+      [`${this.name}.state`]: "state3",
+      [`${this.name}.single`]: {
+        score: 0
+      },
+      [`${this.name}.vs`]: {
+        score: 0
+      },
+      [`${this.name}.squat`]: {
+        score: 0
+      }
     });
   }
 
@@ -242,10 +277,13 @@ export class Game {
 
   startLoop() {
     clearInterval(window.gameAPITimer);
+    this.fetching = false;
     window.gameAPITimer = setInterval(async () => {
+      if (this.fetching) return;
+      this.fetching = true;
       // api 讀取
       try {
-        const host = window.search.host || "localhost";
+        const host = window.search.host || "167.71.201.223";
         const response = await fetch(`https://${host}:3000/api/state`);
         const data = await response.json();
         this.data = data;
@@ -263,6 +301,7 @@ export class Game {
           this[this.state]();
         }
       }
+      this.fetching = false;
     }, 200);
   }
 
@@ -274,7 +313,7 @@ export class Game {
 
   async postState(obj) {
     try {
-      const host = window.search.host || "localhost";
+      const host = window.search.host || "167.71.201.223";
       const response = await fetch(`https://${host}:3000/api/state`, {
         method: "post",
         body: JSON.stringify(obj),
@@ -311,16 +350,17 @@ export class Game {
     // 預設是 game1
     this.menuSelected = "game1";
     sound.click.play();
+    sound.bg.stop();
 
     let lastCheck = Date.now();
     this.checkIntersectionHandle = () => {
       if (Date.now() - lastCheck < 200) return;
 
-      const leftHand = this.camera.keypoints["left_wrist"];
+      // const leftHand = this.camera.keypoints["left_wrist"];
       const rightHand = this.camera.keypoints["right_wrist"];
       let targetHand;
-      if (leftHand && leftHand.visible) {
-        targetHand = leftHand;
+      if (rightHand && rightHand.visible) {
+        targetHand = rightHand;
       }
 
       if (targetHand) {
@@ -352,57 +392,251 @@ export class Game {
       }
     };
 
-    // setTimeout(() => {
-    //   this.$menu.hide();
-    //   this.$menuBg.show();
-    // this.camera.targetMode = false
-    //  this.camera.webcamImage.visible = true
-    // this.$canvasWrapper.css("opacity", "1");
-    //   this.menuItem1.visible = false;
-    //   this.menuItem2.visible = false;
-    //   this.checkIntersectionHandle = null;
-    //   if (this.menuSelected === "game1") {
-    //     this.postState({
-    //       [`${this.name}.state`]: "state3"
-    //     });
-    //   } else {
-    //     this.postState({
-    //       [`${this.name}.state`]: "state3"
-    //     });
-    //   }
-    // }, 4000);
+    const countdown = async count => {
+      for (let i = count; i >= 0; i--) {
+        this.$menuCountdown.text(i);
+        await wait(1000);
+      }
+
+      this.$menu.hide();
+      this.$menuBg.hide();
+      this.camera.targetMode = false;
+      this.camera.webcamImage.visible = true;
+      this.$canvasWrapper.css("opacity", "0");
+      this.menuItem1.visible = false;
+      this.menuItem2.visible = false;
+      this.checkIntersectionHandle = null;
+      if (this.menuSelected === "game1") {
+        this.postState({
+          [`${this.name}.state`]: "state3",
+          [`${this.name}.single`]: {
+            score: 0
+          },
+          [`${this.name}.vs`]: {
+            score: 0
+          },
+          [`${this.name}.squat`]: {
+            score: 0
+          }
+        });
+      } else {
+        this.postState({
+          [`${this.name}.state`]: "state3",
+          [`${this.name}.single`]: {
+            score: 0
+          },
+          [`${this.name}.vs`]: {
+            score: 0
+          },
+          [`${this.name}.squat`]: {
+            score: 0
+          }
+        });
+      }
+    };
+    this.$menuCountdown.text(10);
+    countdown(10);
   }
 
+  // 主目錄
   async state3() {
-    // 不斷做的事
-    // 每隔幾秒
-    // 顯示一條線，線的 xy 隨機 (半透明)
-    // 再隔一秒
-    // 線變實線
-    // 判斷距離
-    await this.startLineLevelGame(1000);
+    this.$menu2.show();
+    this.$menuBg2.show();
+    this.camera.targetMode = true;
+    this.camera.webcamImage.visible = false;
+    this.$canvasWrapper.css("opacity", "0.6");
+    this.menuItem1.visible = false;
+    this.menuItem2.visible = false;
+    // 預設是 game1
+    this.menuSelected = "game1";
+    sound.click.play();
+    sound.bg.stop();
+    let lastCheck = Date.now();
+    this.checkIntersectionHandle = () => {
+      if (Date.now() - lastCheck < 200) return;
+      // const leftHand = this.camera.keypoints["left_wrist"];
+      const rightHand = this.camera.keypoints["right_wrist"];
+      let targetHand;
+      if (rightHand && rightHand.visible) {
+        targetHand = rightHand;
+      }
+      if (targetHand) {
+        if (targetHand.intersectsWithObject(this.menuItem1, true, true)) {
+          if (this.menuSelected !== "game1") {
+            this.menuSelected = "game1";
+            sound.click.play();
+            lastCheck = Date.now();
+            console.log("game1 selected");
+          }
+        } else if (
+          targetHand.intersectsWithObject(this.menuItem2, true, true)
+        ) {
+          if (this.menuSelected !== "game2") {
+            this.menuSelected = "game2";
+            sound.click.play();
+            lastCheck = Date.now();
+            console.log("game2 selected");
+          }
+        }
+      }
+      if (this.menuSelected === "game1") {
+        this.$menuItem3.css("opacity", "1");
+        this.$menuItem4.css("opacity", "0.5");
+      } else if (this.menuSelected === "game2") {
+        this.$menuItem3.css("opacity", "0.5");
+        this.$menuItem4.css("opacity", "1");
+      }
+    };
+
+    const countdown = async count => {
+      for (let i = count; i >= 0; i--) {
+        this.$menuCountdown2.text(i);
+        await wait(1000);
+      }
+      this.$menu2.hide();
+      this.$menuBg2.hide();
+      this.camera.targetMode = false;
+      this.camera.webcamImage.visible = true;
+      this.$canvasWrapper.css("opacity", "0");
+      this.menuItem1.visible = false;
+      this.menuItem2.visible = false;
+      this.checkIntersectionHandle = null;
+      if (this.menuSelected === "game1") {
+        this.postState({
+          [`${this.name}.state`]: "state4",
+          [`${this.name}.single`]: {
+            score: 0
+          },
+          [`${this.name}.vs`]: {
+            score: 0
+          },
+          [`${this.name}.squat`]: {
+            score: 0
+          }
+        });
+      } else {
+        this.postState({
+          [`${this.name}.state`]: "state4",
+          [`${this.name}.single`]: {
+            score: 0
+          },
+          [`${this.name}.vs`]: {
+            score: 0
+          },
+          [`${this.name}.squat`]: {
+            score: 0
+          }
+        });
+      }
+    };
+    this.$menuCountdown2.text(10);
+    countdown(10);
   }
 
   async state4() {
-    alert("game2");
+    this.$single.show();
+    this.$singleBg.show();
+    this.$canvasWrapper.css("opacity", "1");
+    this.$singlePassed1.css("background-color", "transparent");
+    this.$singlePassed2.css("background-color", "transparent");
+    this.$singlePassed3.css("background-color", "transparent");
+    this.$singlePassed4.css("background-color", "transparent");
+    this.$singlePassed5.css("background-color", "transparent");
+    this.$singleTimesup.hide();
+    this.$singleLevelup.hide();
+    this.$singleSmash.hide();
+
+    sound.bg.play();
+
+    this.$singleScore.text(0);
+    this.$singleLevel.text(`LEVEL 1`);
+
+    this.singleTimesup = false;
+    const countdown = async count => {
+      for (let i = count; i >= 0; i--) {
+        this.$singleCountdown.text(i);
+        await wait(1000);
+      }
+      this.singleTimesup = true;
+      // this.$menu2.hide();
+      // this.$menuBg2.hide();
+      // this.camera.targetMode = false;
+      // this.camera.webcamImage.visible = true;
+      // this.$canvasWrapper.css("opacity", "0");
+      // this.menuItem1.visible = false;
+      // this.menuItem2.visible = false;
+      // this.checkIntersectionHandle = null;
+      // if (this.menuSelected === "game1") {
+      //   this.postState({
+      //     [`${this.name}.state`]: "state4",
+      //     [`${this.name}.single`]: {
+      //       score: 0
+      //     },
+      //     [`${this.name}.vs`]: {
+      //       score: 0
+      //     },
+      //     [`${this.name}.squat`]: {
+      //       score: 0
+      //     }
+      //   });
+      // } else {
+      //   this.postState({
+      //     [`${this.name}.state`]: "state2",
+      //     [`${this.name}.single`]: {
+      //       score: 0
+      //     },
+      //     [`${this.name}.vs`]: {
+      //       score: 0
+      //     },
+      //     [`${this.name}.squat`]: {
+      //       score: 0
+      //     }
+      //   });
+      // }
+    };
+    this.$singleCountdown.text(60);
+    countdown(60);
+
+    this.singleLevel = 1;
+    this.singlePassed = 0;
+    this.singleScore = 0;
+    await this.startLineLevelGame(1000);
+
+    this.$singleTimesup.show();
+
+    this.rect1.visible = false;
+    this.rect2.visible = false;
+    this.rect3.visible = false;
+    this.line.visible = false;
+    this.$singleTimesup.hide();
+    this.$singleLevelup.hide();
+    this.$singleSmash.hide();
   }
+
+  // async state3() {
+  //   // 不斷做的事
+  //   // 每隔幾秒
+  //   // 顯示一條線，線的 xy 隨機 (半透明)
+  //   // 再隔一秒
+  //   // 線變實線
+  //   // 判斷距離
+  //   await this.startLineLevelGame(1000);
+  // }
+
+  // async state4() {
+  //   alert("game2");
+  // }
 
   async startLineLevelGame(times) {
     for (let i = 0; i < times; i++) {
       // reset
-      this.rect1.visible = true;
-      this.rect2.visible = true;
-      this.rect3.visible = true;
-      this.rect1.set("fill", "rgba(200,0,0,0.2)");
-      this.rect2.set("fill", "rgba(0,200,0,0.2)");
-      this.rect3.set("fill", "rgba(0,0,200,0.2)");
       this.line.visible = false;
 
       // 等一秒
-      await wait(1000);
+      await wait(500);
+      if (this.singleTimesup) return;
 
       // 顯示一個燈
-      this.rect1.set("fill", "rgba(200,0,0,1)");
       sound.click.play();
       // 顯示半透明線
       this.line.visible = true;
@@ -426,26 +660,25 @@ export class Game {
         x2,
         y2
       });
+      this.line.set("stroke", "rgba(0,255,0,0.25)");
+
+      // 等一秒
+      await wait(500);
+      if (this.singleTimesup) return;
+
+      // 顯示一個燈
       this.line.set("stroke", "rgba(0,255,0,0.5)");
 
       // 等一秒
-      await wait(1000);
+      await wait(500);
+      if (this.singleTimesup) return;
 
-      // 顯示一個燈
-      this.rect2.set("fill", "rgba(0,200,0,1)");
-      sound.click.play();
-
-      // 等一秒
-      await wait(1000);
-
-      // 顯示一個燈
-      this.rect3.set("fill", "rgba(0,0,200,1)");
-      sound.click.play();
       // 變成實線
       this.line.set("stroke", "rgba(255,0,0,1)");
 
       // 等 0.2 秒
       await wait(200);
+      if (this.singleTimesup) return;
 
       // 並開始計算碰撞
       // 判定只有一次
@@ -475,7 +708,7 @@ export class Game {
       }
 
       // 變回綠色
-      this.line.set("stroke", "rgba(0,255,0,0.5)");
+      this.line.set("stroke", "rgba(255,0,0,0.5)");
 
       console.log("kit", kit);
       if (kit) {
@@ -484,8 +717,66 @@ export class Game {
         sound.click4.play();
       }
 
+      // 重置關卡
+      if (kit) {
+        // passed 歸零
+        this.singlePassed = 0;
+        // 關卡不變
+        // 不會加分數
+        this.$singleSmash.show();
+        setTimeout(() => {
+          this.$singleSmash.hide();
+        }, 500);
+      } else {
+        // passed +1
+        this.singlePassed += 1;
+        // 關卡分析
+        if (this.singlePassed > 5) {
+          this.singleLevel += 1;
+          this.singlePassed = 1;
+          this.$singleLevelup.show();
+          setTimeout(() => {
+            this.$singleLevelup.hide();
+          }, 500);
+        }
+        // 分數分析
+        this.singleScore +=
+          100 * ((this.singleLevel - 1) * 5 + this.singlePassed);
+      }
+
+      // 更新 ui
+      this.$singleScore.text(this.singleScore);
+      this.$singleLevel.text(`LEVEL ${this.singleLevel}`);
+      if (this.singlePassed >= 1) {
+        this.$singlePassed1.css("background-color", "blue");
+      } else {
+        this.$singlePassed1.css("background-color", "transparent");
+      }
+      if (this.singlePassed >= 2) {
+        this.$singlePassed2.css("background-color", "blue");
+      } else {
+        this.$singlePassed2.css("background-color", "transparent");
+      }
+      if (this.singlePassed >= 3) {
+        this.$singlePassed3.css("background-color", "blue");
+      } else {
+        this.$singlePassed3.css("background-color", "transparent");
+      }
+      if (this.singlePassed >= 4) {
+        this.$singlePassed4.css("background-color", "blue");
+      } else {
+        this.$singlePassed4.css("background-color", "transparent");
+      }
+      if (this.singlePassed >= 5) {
+        this.$singlePassed5.css("background-color", "blue");
+      } else {
+        this.$singlePassed5.css("background-color", "transparent");
+      }
+
       // 等 0.8 秒
       await wait(800);
+      if (this.singleTimesup) return;
+
       // reset
       this.rect1.visible = false;
       this.rect2.visible = false;

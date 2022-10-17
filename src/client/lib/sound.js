@@ -26,6 +26,11 @@ export const click5 = new Howl({
   src: ["click5.wav"]
 });
 
+export const bg = new Howl({
+  src: ["audio/background.mp3"],
+  loop: true
+});
+
 click.once("load", function() {
   console.log("sound loaded");
   // click.play();

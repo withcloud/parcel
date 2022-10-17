@@ -117,7 +117,7 @@ export class Camera {
     console.log(window.videos);
 
     if (!window.search.deviceId) {
-      alert("deviceId not found");
+      console.log("deviceId not found");
       // await wait(1000 * 60 * 60 * 24);
     }
 
@@ -405,7 +405,7 @@ export class Camera {
       c.visible = true;
       c.left = keypoint.x;
       c.top = keypoint.y;
-      if (keypoint.name === "left_wrist" && this.targetMode) {
+      if (keypoint.name === "right_wrist" && this.targetMode) {
         target.visible = true;
         target.left = keypoint.x;
         target.top = keypoint.y;
@@ -414,7 +414,7 @@ export class Camera {
       c.visible = false;
       c.left = keypoint.x;
       c.top = keypoint.y;
-      if (keypoint.name === "left_wrist") {
+      if (keypoint.name === "right_wrist") {
         target.visible = false;
         target.left = keypoint.x;
         target.top = keypoint.y;

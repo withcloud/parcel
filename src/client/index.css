@@ -26,3 +26,22 @@ html, body {
 #header1 {
   background-image: url(../../static/images/common/title-bg.png);
 } */
+
+#stats canvas {
+  opacity: 0.25;
+}
+
+@font-face {
+  font-family: PingFang SC;
+  src: url("/ttf/PingFang.ttf");
+}
+
+@font-face {
+  font-family: Inter;
+  src: url("/ttf/Inter.ttf");
+}
+
+@font-face {
+  font-family: Atomic Age;
+  src: url("/ttf/AtomicAge.ttf");
+}
