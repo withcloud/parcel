@@ -85,7 +85,7 @@ export class Camera {
           ideal: targetFPS
         },
         deviceId: window.search.deviceId
-          ? { exact: window.search.deviceId }
+          ? { ideal: window.search.deviceId }
           : undefined
       }
     };
@@ -118,7 +118,7 @@ export class Camera {
 
     if (!window.search.deviceId) {
       alert("deviceId not found");
-      await wait(1000 * 60 * 60 * 24);
+      // await wait(1000 * 60 * 60 * 24);
     }
 
     const camera = new Camera();
@@ -201,6 +201,28 @@ export class Camera {
       this.keypoints[keypoint.key] = c;
       c.zIndex = 8;
     });
+
+    const target = {
+      key: "target",
+      x: 401.8436716010829,
+      y: 233.24806604143765
+    };
+    const c = new fabric.Circle({
+      left: target.x,
+      top: target.y,
+      strokeWidth: 2,
+      radius: 12,
+      fill: "yellow",
+      stroke: "white",
+      originX: "center",
+      originY: "center",
+      objectCaching: false,
+      selectable: false
+    });
+    c.poseId = 0;
+    c.keypointName = target.key;
+    this.canvas.add(c);
+    this.target = c;
 
     const skeletons = [
       {
@@ -377,15 +399,26 @@ export class Camera {
     const scoreThreshold = params.STATE.modelConfig.scoreThreshold || 0;
 
     const c = this.keypoints[keypoint.name];
+    const target = this.target;
 
     if (score >= scoreThreshold) {
       c.visible = true;
       c.left = keypoint.x;
       c.top = keypoint.y;
+      if (keypoint.name === "left_wrist" && this.targetMode) {
+        target.visible = true;
+        target.left = keypoint.x;
+        target.top = keypoint.y;
+      }
     } else {
       c.visible = false;
       c.left = keypoint.x;
       c.top = keypoint.y;
+      if (keypoint.name === "left_wrist") {
+        target.visible = false;
+        target.left = keypoint.x;
+        target.top = keypoint.y;
+      }
     }
   }
 

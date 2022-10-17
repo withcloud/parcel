@@ -10,51 +10,87 @@
   </head>
 
   <body class="bg-gray-300">
-    <!-- fpx -->
-    <div id="stats"></div>
+    <div class="absolute inset-0">
+      <!-- fpx -->
+      <div id="stats"></div>
 
-    <div id="main">
-      <!-- camera and canvas -->
-      <div class="container">
-        <div class="canvas-wrapper">
+      <!-- text -->
+      <div id="text" class="absolute whitespace-pre-wrap top-0 right-0"></div>
+    </div>
+
+    <!-- bg -->
+    <div
+      id="menu-bg"
+      class="absolute inset-0 flex justify-center items-center bg-gradient-to-r from-[#3c2673] to-[#6a2383]"
+    ></div>
+
+    <div class="absolute inset-0 flex justify-center items-center">
+      <div class="relative w-[640px] h-[480px]">
+        <!-- menu -->
+        <div id="menu" class="w-[640px] h-[480px] absolute top-0 left-0">
+          <div class="flex justify-center relative mt-10">
+            <img
+              src="../../static/images/common/title-bg.png"
+              class="w-[200px]"
+            />
+            <div
+              class="absolute inset-0 flex justify-center items-center text-lg text-black font-medium"
+            >
+              <h1>大廳</h1>
+            </div>
+          </div>
+
+          <div class="flex justify-center space-x-8 mt-16">
+            <div id="menu-item1" class="w-[280px]">
+              <img
+                src="../../static/images/home/sapce-break.png"
+                class="w-[280]"
+              />
+              <div class="p-[10px] text-white">
+                <p class="text-xl font-medium">Space Break</p>
+                <p class="text-lg">
+                  在不斷襲來的鐳射禁區中，讓您的身體動起來吧
+                </p>
+              </div>
+            </div>
+            <div id="menu-item2" class="w-[280px]">
+              <img src="../../static/images/home/squat.png" class="w-[280]" />
+              <div class="p-[10px] text-white">
+                <p class="text-xl font-medium">深蹲</p>
+                <p class="text-lg">
+                  為心跳和身體的健康譜曲
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- camera and canvas -->
+        <div id="canvas-wrapper" class="canvas-wrapper">
           <canvas id="output" width="640" height="480"></canvas>
           <video
             id="video"
             class="opacity-25 hidden"
             playsinline
             style="
-              -webkit-transform: scaleX(-1);
-              transform: scaleX(-1);
-              "
+                -webkit-transform: scaleX(-1);
+                transform: scaleX(-1);
+                "
           ></video>
         </div>
-      </div>
 
-      <!-- intro -->
-      <div
-        id="intro"
-        class="w-[640px] h-[480px] bg-red-400 opacity-50 absolute top-0 left-0"
-      >
+        <!-- intro -->
         <div
-          class="w-full h-full flex justify-center items-center text-4xl text-black"
+          id="intro"
+          class="w-[640px] h-[480px] bg-red-400 opacity-50 absolute top-0 left-0"
         >
-          intro
-        </div>
-      </div>
-
-      <!-- menu -->
-      <div
-        id="menu"
-        class="w-[640px] h-[480px] opacity-50 absolute top-0 left-0"
-      >
-        <div
-          class="w-full h-full flex justify-center items-center text-4xl text-black"
-        >
-          用手選擇其中一邊
+          <div
+            class="w-full h-full flex justify-center items-center text-4xl text-black"
+          >
+            intro
+          </div>
         </div>
       </div>
     </div>
-
-    <div id="text" class="absolute whitespace-pre-wrap top-0 right-0"></div>
   </body>
 </html>

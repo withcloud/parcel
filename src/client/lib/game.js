@@ -155,12 +155,17 @@ export class Game {
     this.$intro.hide();
     this.$menu = $("#menu");
     this.$menu.hide();
+    this.$menuBg = $("#menu-bg");
+    this.$menuBg.hide();
+    this.$menuItem1 = $("#menu-item1");
+    this.$menuItem2 = $("#menu-item2");
+    this.$canvasWrapper = $("#canvas-wrapper");
 
     // 遊戲流程
 
-    // intro
+    // menu
     this.postState({
-      [`${this.name}.state`]: "state1"
+      [`${this.name}.state`]: "state2"
     });
   }
 
@@ -240,7 +245,8 @@ export class Game {
     window.gameAPITimer = setInterval(async () => {
       // api 讀取
       try {
-        const response = await fetch("http://localhost:3000/api/state");
+        const host = window.search.host || "localhost";
+        const response = await fetch(`https://${host}:3000/api/state`);
         const data = await response.json();
         this.data = data;
       } catch (error) {
@@ -268,7 +274,8 @@ export class Game {
 
   async postState(obj) {
     try {
-      const response = await fetch("http://localhost:3000/api/state", {
+      const host = window.search.host || "localhost";
+      const response = await fetch(`https://${host}:3000/api/state`, {
         method: "post",
         body: JSON.stringify(obj),
         headers: { "Content-Type": "application/json" }
@@ -294,8 +301,13 @@ export class Game {
   // 主目錄
   async state2() {
     this.$menu.show();
-    this.menuItem1.visible = true;
-    this.menuItem2.visible = true;
+    this.$menuBg.show();
+    this.camera.targetMode = true;
+    this.camera.webcamImage.visible = false;
+    this.$canvasWrapper.css("opacity", "0.6");
+    this.menuItem1.visible = false;
+    this.menuItem2.visible = false;
+
     // 預設是 game1
     this.menuSelected = "game1";
     sound.click.play();
@@ -309,8 +321,6 @@ export class Game {
       let targetHand;
       if (leftHand && leftHand.visible) {
         targetHand = leftHand;
-      } else if (rightHand && rightHand.visible) {
-        targetHand = rightHand;
       }
 
       if (targetHand) {
@@ -319,6 +329,7 @@ export class Game {
             this.menuSelected = "game1";
             sound.click.play();
             lastCheck = Date.now();
+            console.log("game1 selected");
           }
         } else if (
           targetHand.intersectsWithObject(this.menuItem2, true, true)
@@ -327,37 +338,39 @@ export class Game {
             this.menuSelected = "game2";
             sound.click.play();
             lastCheck = Date.now();
+            console.log("game2 selected");
           }
         }
       }
 
       if (this.menuSelected === "game1") {
-        this.menuItem1.set("opacity", 1);
-        this.menuItem2.set("opacity", 0.5);
+        this.$menuItem1.css("opacity", "1");
+        this.$menuItem2.css("opacity", "0.5");
       } else if (this.menuSelected === "game2") {
-        this.menuItem1.set("opacity", 0.5);
-        this.menuItem2.set("opacity", 1);
-      } else {
-        this.menuItem1.set("opacity", 0.5);
-        this.menuItem2.set("opacity", 0.5);
+        this.$menuItem1.css("opacity", "0.5");
+        this.$menuItem2.css("opacity", "1");
       }
     };
 
-    setTimeout(() => {
-      this.$menu.hide();
-      this.menuItem1.visible = false;
-      this.menuItem2.visible = false;
-      this.checkIntersectionHandle = null;
-      if (this.menuSelected === "game1") {
-        this.postState({
-          [`${this.name}.state`]: "state3"
-        });
-      } else {
-        this.postState({
-          [`${this.name}.state`]: "state3"
-        });
-      }
-    }, 4000);
+    // setTimeout(() => {
+    //   this.$menu.hide();
+    //   this.$menuBg.show();
+    // this.camera.targetMode = false
+    //  this.camera.webcamImage.visible = true
+    // this.$canvasWrapper.css("opacity", "1");
+    //   this.menuItem1.visible = false;
+    //   this.menuItem2.visible = false;
+    //   this.checkIntersectionHandle = null;
+    //   if (this.menuSelected === "game1") {
+    //     this.postState({
+    //       [`${this.name}.state`]: "state3"
+    //     });
+    //   } else {
+    //     this.postState({
+    //       [`${this.name}.state`]: "state3"
+    //     });
+    //   }
+    // }, 4000);
   }
 
   async state3() {
