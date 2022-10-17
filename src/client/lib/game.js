@@ -283,8 +283,8 @@ export class Game {
       this.fetching = true;
       // api 讀取
       try {
-        const host = window.search.host || "167.71.201.223";
-        const response = await fetch(`https://${host}:3000/api/state`);
+        const host = window.search.host || "zoke.io";
+        const response = await fetch(`https://${host}/api/state`);
         const data = await response.json();
         this.data = data;
       } catch (error) {
@@ -313,8 +313,8 @@ export class Game {
 
   async postState(obj) {
     try {
-      const host = window.search.host || "167.71.201.223";
-      const response = await fetch(`https://${host}:3000/api/state`, {
+      const host = window.search.host || "zoke.io";
+      const response = await fetch(`https://${host}/api/state`, {
         method: "post",
         body: JSON.stringify(obj),
         headers: { "Content-Type": "application/json" }
