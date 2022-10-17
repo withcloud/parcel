@@ -6,8 +6,8 @@
     "start-watch": "nodemon ./src/server/index.js",
     "dev": "concurrently --kill-others \"npm run start-watch\" \"npm run build-watch\"",
     "build": "parcel build ./src/client/index.html",
-    "local": "npm run build && node server/index.js",
-    "server": "node server/index.js",
+    "local": "npm run build && node ./src/server/index.js",
+    "server": "node ./src/server/http.js",
     "start": "parcel"
   },
   "devDependencies": {
