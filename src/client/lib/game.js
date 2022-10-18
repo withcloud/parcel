@@ -140,7 +140,9 @@ export class Game {
     this.camera = camera;
     this.canvas = camera.canvas;
     this.data = null;
-    this.name = window.search.name || "p1";
+    this.name =
+      window.search.name ||
+      "test" + generateRandomIntegerInRange(1000, 9999).toString();
     this.state = "";
   }
 
