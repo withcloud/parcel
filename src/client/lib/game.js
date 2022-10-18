@@ -186,6 +186,12 @@ export class Game {
     this.$singleLevelup.hide();
     this.$singleSmash.hide();
     this.$singleTimesup.hide();
+    this.$singleEnd = $("#single-end");
+    this.$singleEndBg = $("#single-end-bg");
+    this.$singleEnd.hide();
+    this.$singleEndBg.hide();
+    this.$singleEndScore = $("#single-end-score");
+    this.$singleEndCountdown = $("#single-end-countdown");
 
     // 遊戲流程
 
@@ -235,7 +241,7 @@ export class Game {
 
     this.line = new fabric.Line([50, 10, 200, 150], {
       stroke: "green",
-      strokeWidth: 10,
+      strokeWidth: 16,
       originX: "center",
       originY: "center"
     });
@@ -448,9 +454,57 @@ export class Game {
     this.menuItem1.visible = false;
     this.menuItem2.visible = false;
     // 預設是 game1
-    this.menuSelected = "game1";
+    this.menuSelected = "";
     sound.click.play();
     sound.bg.stop();
+
+    let count = 4;
+    const countdown = () => {
+      this.$menuCountdown2.text(count);
+      count--;
+
+      if (count < 0) {
+        clearInterval(this.menuCountdown2);
+
+        this.$menu2.hide();
+        this.$menuBg2.hide();
+        this.camera.targetMode = false;
+        this.camera.webcamImage.visible = true;
+        this.$canvasWrapper.css("opacity", "0");
+        this.menuItem1.visible = false;
+        this.menuItem2.visible = false;
+        this.checkIntersectionHandle = null;
+        if (this.menuSelected === "game1") {
+          this.postState({
+            [`${this.name}.state`]: "state4",
+            [`${this.name}.single`]: {
+              score: 0
+            },
+            [`${this.name}.vs`]: {
+              score: 0
+            },
+            [`${this.name}.squat`]: {
+              score: 0
+            }
+          });
+        } else {
+          this.postState({
+            [`${this.name}.state`]: "state4",
+            [`${this.name}.single`]: {
+              score: 0
+            },
+            [`${this.name}.vs`]: {
+              score: 0
+            },
+            [`${this.name}.squat`]: {
+              score: 0
+            }
+          });
+        }
+      }
+    };
+    this.$menuCountdown2.text("");
+
     let lastCheck = Date.now();
     this.checkIntersectionHandle = () => {
       if (Date.now() - lastCheck < 200) return;
@@ -467,6 +521,10 @@ export class Game {
             sound.click.play();
             lastCheck = Date.now();
             console.log("game1 selected");
+            clearInterval(this.menuCountdown2);
+            count = 4;
+            this.$menuCountdown2.text("");
+            this.menuCountdown2 = setInterval(countdown, 1000);
           }
         } else if (
           targetHand.intersectsWithObject(this.menuItem2, true, true)
@@ -476,7 +534,29 @@ export class Game {
             sound.click.play();
             lastCheck = Date.now();
             console.log("game2 selected");
+            clearInterval(this.menuCountdown2);
+            count = 4;
+            this.$menuCountdown2.text("");
+            this.menuCountdown2 = setInterval(countdown, 1000);
           }
+        } else {
+          if (this.menuSelected !== "") {
+            this.menuSelected = "";
+            lastCheck = Date.now();
+            console.log("game none selected");
+            clearInterval(this.menuCountdown2);
+            count = 4;
+            this.$menuCountdown2.text("");
+          }
+        }
+      } else {
+        if (this.menuSelected !== "") {
+          this.menuSelected = "";
+          lastCheck = Date.now();
+          console.log("game none selected");
+          clearInterval(this.menuCountdown2);
+          count = 4;
+          this.$menuCountdown2.text("");
         }
       }
       if (this.menuSelected === "game1") {
@@ -485,52 +565,11 @@ export class Game {
       } else if (this.menuSelected === "game2") {
         this.$menuItem3.css("opacity", "0.5");
         this.$menuItem4.css("opacity", "1");
-      }
-    };
-
-    const countdown = async count => {
-      for (let i = count; i >= 0; i--) {
-        this.$menuCountdown2.text(i);
-        await wait(1000);
-      }
-      this.$menu2.hide();
-      this.$menuBg2.hide();
-      this.camera.targetMode = false;
-      this.camera.webcamImage.visible = true;
-      this.$canvasWrapper.css("opacity", "0");
-      this.menuItem1.visible = false;
-      this.menuItem2.visible = false;
-      this.checkIntersectionHandle = null;
-      if (this.menuSelected === "game1") {
-        this.postState({
-          [`${this.name}.state`]: "state4",
-          [`${this.name}.single`]: {
-            score: 0
-          },
-          [`${this.name}.vs`]: {
-            score: 0
-          },
-          [`${this.name}.squat`]: {
-            score: 0
-          }
-        });
       } else {
-        this.postState({
-          [`${this.name}.state`]: "state4",
-          [`${this.name}.single`]: {
-            score: 0
-          },
-          [`${this.name}.vs`]: {
-            score: 0
-          },
-          [`${this.name}.squat`]: {
-            score: 0
-          }
-        });
+        this.$menuItem3.css("opacity", "0.5");
+        this.$menuItem4.css("opacity", "0.5");
       }
     };
-    this.$menuCountdown2.text(10);
-    countdown(10);
   }
 
   async state4() {
@@ -558,41 +597,6 @@ export class Game {
         await wait(1000);
       }
       this.singleTimesup = true;
-      // this.$menu2.hide();
-      // this.$menuBg2.hide();
-      // this.camera.targetMode = false;
-      // this.camera.webcamImage.visible = true;
-      // this.$canvasWrapper.css("opacity", "0");
-      // this.menuItem1.visible = false;
-      // this.menuItem2.visible = false;
-      // this.checkIntersectionHandle = null;
-      // if (this.menuSelected === "game1") {
-      //   this.postState({
-      //     [`${this.name}.state`]: "state4",
-      //     [`${this.name}.single`]: {
-      //       score: 0
-      //     },
-      //     [`${this.name}.vs`]: {
-      //       score: 0
-      //     },
-      //     [`${this.name}.squat`]: {
-      //       score: 0
-      //     }
-      //   });
-      // } else {
-      //   this.postState({
-      //     [`${this.name}.state`]: "state2",
-      //     [`${this.name}.single`]: {
-      //       score: 0
-      //     },
-      //     [`${this.name}.vs`]: {
-      //       score: 0
-      //     },
-      //     [`${this.name}.squat`]: {
-      //       score: 0
-      //     }
-      //   });
-      // }
     };
     this.$singleCountdown.text(60);
     countdown(60);
@@ -604,13 +608,70 @@ export class Game {
 
     this.$singleTimesup.show();
 
+    await wait(4000);
+
     this.rect1.visible = false;
     this.rect2.visible = false;
     this.rect3.visible = false;
     this.line.visible = false;
+
+    this.$single.hide();
+    this.$singleBg.hide();
+    this.$canvasWrapper.css("opacity", "0");
     this.$singleTimesup.hide();
     this.$singleLevelup.hide();
     this.$singleSmash.hide();
+
+    this.postState({
+      [`${this.name}.state`]: "state5",
+      [`${this.name}.single`]: {
+        score: this.singleScore
+      },
+      [`${this.name}.vs`]: {
+        score: 0
+      },
+      [`${this.name}.squat`]: {
+        score: 0
+      }
+    });
+  }
+
+  async state5() {
+    this.$singleEnd.show();
+    this.$singleEndBg.show();
+    this.camera.targetMode = true;
+    this.camera.webcamImage.visible = false;
+    this.$canvasWrapper.css("opacity", "0.6");
+
+    sound.bg.stop();
+
+    this.$singleEndScore.text(this.singleScore);
+
+    const countdown = async count => {
+      for (let i = count; i >= 0; i--) {
+        this.$singleEndCountdown.text(i);
+        await wait(1000);
+      }
+      this.$singleEnd.hide();
+      this.$singleEndBg.hide();
+      this.camera.targetMode = false;
+      this.camera.webcamImage.visible = true;
+      this.$canvasWrapper.css("opacity", "0");
+      this.postState({
+        [`${this.name}.state`]: "state3",
+        [`${this.name}.single`]: {
+          score: 0
+        },
+        [`${this.name}.vs`]: {
+          score: 0
+        },
+        [`${this.name}.squat`]: {
+          score: 0
+        }
+      });
+    };
+    this.$singleEndCountdown.text(10);
+    countdown(10);
   }
 
   // async state3() {

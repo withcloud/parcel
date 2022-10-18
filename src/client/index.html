@@ -45,6 +45,10 @@
         <source src="/video/bg.mp4" />
       </video>
     </div>
+    <div
+      id="single-end-bg"
+      class="absolute inset-0 flex justify-center items-center bg-gradient-to-b from-[#0B72FF] via-[#6476FE] to-[#6F77FE]"
+    ></div>
 
     <!-- main -->
     <div class="absolute inset-0 flex justify-center items-center">
@@ -120,6 +124,33 @@
                 <p>競賽模式</p>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- single end -->
+        <div id="single-end" class="w-[640px] h-[480px] absolute top-0 left-0">
+          <div class="flex w-full h-full justify-center items-center">
+            <div class="w-[300px]">
+              <div
+                class="w-[280px] h-[280px] m-[10px] relative flex flex-col justify-center items-center text-white"
+              >
+                <img
+                  class="absolute w-full h-full bg-cover animate-pulse"
+                  src="/images/space_break/singleEndPage/ellipse-score.png"
+                />
+                <div class=" text-[64px] leading-[64px] text-center">
+                  <div id="single-end-score" class="animate-bounce">0</div>
+                  <div class="w-full mt-2 text-[32px] leading-[40px]">得分</div>
+                </div>
+              </div>
+              <div
+                id="single-end-countdown"
+                class="text-center text-white text-4xl mt-8"
+              >
+                0
+              </div>
+            </div>
+            <!-- <div class="flex-1">2</div> -->
           </div>
         </div>
 
