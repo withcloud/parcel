@@ -14,7 +14,7 @@ export const STATE = {
   backend: "tfjs-webgl",
   flags: {},
   modelConfig: {
-    maxPoses: 1,
+    maxPoses: 5,
     type: "lightning",
     scoreThreshold: 0.3,
     customModel: "",

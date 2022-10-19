@@ -52,7 +52,7 @@ async function renderResult() {
 
     // 拿到 poses
     try {
-      poses = await detector.estimatePoses(camera.video, {
+      window.poses = poses = await detector.estimatePoses(camera.video, {
         maxPoses: STATE.modelConfig.maxPoses,
         flipHorizontal: false
       });
@@ -67,7 +67,10 @@ async function renderResult() {
   }
 
   // canvas 畫 poses
-  const pose = poses && poses[0];
+  let pose;
+  if (poses) {
+    pose = _.maxBy(poses, p => p.score);
+  }
   if (pose) {
     await camera.drawResult(pose);
     await camera.drawAngles();

@@ -1,6 +1,9 @@
 /* global $ */
 
 import { fabric } from "fabric";
+import { createAvatar } from "@dicebear/avatars";
+import * as style from "@dicebear/pixel-art";
+import { v4 as uuidv4 } from "uuid";
 
 import * as sound from "./sound";
 
@@ -166,6 +169,7 @@ export class Game {
     this.$menuItem3 = $("#menu-item3");
     this.$menuItem4 = $("#menu-item4");
     this.$menuCountdown2 = $("#menu-countdown2");
+    this.$menuBack2 = $("#menu-back2");
     this.$menu2 = $("#menu2");
     this.$menuBg2 = $("#menu-bg2");
     this.$menu2.hide();
@@ -195,20 +199,35 @@ export class Game {
     this.$singleEndScore = $("#single-end-score");
     this.$singleEndCountdown = $("#single-end-countdown");
 
+    this.$roomAvatar1 = $("#room_avatar1");
+    this.$roomAvatar2 = $("#room_avatar2");
+    this.$room = $("#room");
+    this.$roomBg = $("#room-bg");
+    this.$room.hide();
+    this.$roomBg.hide();
+    this.$roomCountdown = $("#room-countdown");
+    this.$roomBack = $("#room-back");
+
+    this.$singleScoreBoard = $("#single-score-board");
+    this.$vsScoreBoard = $("#vs-score-board");
+    this.$vsP1Score = $("#vs-p1-score");
+    this.$vsP2Score = $("#vs-p2-score");
+
+    this.$vsEnd = $("#vs-end");
+    this.$vsEndBg = $("#vs-end-bg");
+    this.$vsEnd.hide();
+    this.$vsEndBg.hide();
+    this.$vsEndP1Score = $("#vs-end-p1-score");
+    this.$vsEndP2Score = $("#vs-end-p2-score");
+    this.$vsEndCountdown = $("#vs-end-countdown");
+
     // 遊戲流程
 
     // menu
     this.postState({
-      [`${this.name}.state`]: "state3",
-      [`${this.name}.single`]: {
-        score: 0
-      },
-      [`${this.name}.vs`]: {
-        score: 0
-      },
-      [`${this.name}.squat`]: {
-        score: 0
-      }
+      id: uuidv4(),
+      name: this.name,
+      state: "state3"
     });
   }
 
@@ -217,9 +236,9 @@ export class Game {
     // 暫時不用的可以設 visible 為 false
     this.menuItem1 = new fabric.Rect({
       left: 10,
-      top: 10,
+      top: 160,
       width: 280,
-      height: 440,
+      height: 300,
       stroke: "#eee",
       strokeWidth: 10,
       fill: "rgba(0,0,200,0.5)"
@@ -230,9 +249,9 @@ export class Game {
 
     this.menuItem2 = new fabric.Rect({
       left: 320,
-      top: 10,
+      top: 160,
       width: 280,
-      height: 440,
+      height: 300,
       stroke: "#eee",
       strokeWidth: 10,
       fill: "rgba(0,200,0,0.5)"
@@ -240,6 +259,19 @@ export class Game {
     this.canvas.add(this.menuItem2);
     this.menuItem2.zIndex = 10;
     this.menuItem2.visible = false;
+
+    this.menuItem3 = new fabric.Rect({
+      left: 0,
+      top: 0,
+      width: 200,
+      height: 140,
+      stroke: "#eee",
+      strokeWidth: 10,
+      fill: "rgba(0,200,0,0.5)"
+    });
+    this.canvas.add(this.menuItem3);
+    this.menuItem3.zIndex = 10;
+    this.menuItem3.visible = false;
 
     this.line = new fabric.Line([50, 10, 200, 150], {
       stroke: "green",
@@ -292,7 +324,9 @@ export class Game {
       // api 讀取
       try {
         const host = window.search.host || "zoke.io";
-        const response = await fetch(`https://${host}/api/state`);
+        const response = await fetch(
+          `https://${host}/api/state?name=` + this.name
+        );
         const data = await response.json();
         this.data = data;
       } catch (error) {
@@ -302,7 +336,7 @@ export class Game {
       // 根據 api 做相應的處理
       if (!this.data) return;
 
-      const nextState = this.data[this.name]?.state;
+      const nextState = this.data?.state;
       if (nextState && nextState !== this.state) {
         this.state = nextState;
         if (this[this.state]) {
@@ -356,21 +390,52 @@ export class Game {
     this.menuItem2.visible = false;
 
     // 預設是 game1
-    this.menuSelected = "game1";
+    this.menuSelected = "";
     sound.click.play();
     sound.bg.stop();
+
+    let count = 4;
+    const countdown = () => {
+      this.$menuCountdown.text(count);
+      count--;
+
+      if (count < 0) {
+        clearInterval(this.menuCountdown);
+
+        this.$menu.hide();
+        this.$menuBg.hide();
+        this.camera.targetMode = false;
+        this.camera.webcamImage.visible = true;
+        this.$canvasWrapper.css("opacity", "0");
+        this.menuItem1.visible = false;
+        this.menuItem2.visible = false;
+        this.checkIntersectionHandle = null;
+        if (this.menuSelected === "game1") {
+          this.postState({
+            id: uuidv4(),
+            name: this.name,
+            state: "state3"
+          });
+        } else {
+          this.postState({
+            id: uuidv4(),
+            name: this.name,
+            state: "state3"
+          });
+        }
+      }
+    };
+    this.$menuCountdown.text("");
 
     let lastCheck = Date.now();
     this.checkIntersectionHandle = () => {
       if (Date.now() - lastCheck < 200) return;
-
       // const leftHand = this.camera.keypoints["left_wrist"];
       const rightHand = this.camera.keypoints["right_wrist"];
       let targetHand;
       if (rightHand && rightHand.visible) {
         targetHand = rightHand;
       }
-
       if (targetHand) {
         if (targetHand.intersectsWithObject(this.menuItem1, true, true)) {
           if (this.menuSelected !== "game1") {
@@ -378,6 +443,10 @@ export class Game {
             sound.click.play();
             lastCheck = Date.now();
             console.log("game1 selected");
+            clearInterval(this.menuCountdown);
+            count = 4;
+            this.$menuCountdown.text("");
+            this.menuCountdown = setInterval(countdown, 1000);
           }
         } else if (
           targetHand.intersectsWithObject(this.menuItem2, true, true)
@@ -387,63 +456,42 @@ export class Game {
             sound.click.play();
             lastCheck = Date.now();
             console.log("game2 selected");
+            clearInterval(this.menuCountdown);
+            count = 4;
+            this.$menuCountdown.text("");
+            this.menuCountdown = setInterval(countdown, 1000);
+          }
+        } else {
+          if (this.menuSelected !== "") {
+            this.menuSelected = "";
+            lastCheck = Date.now();
+            console.log("game none selected");
+            clearInterval(this.menuCountdown);
+            count = 4;
+            this.$menuCountdown.text("");
           }
         }
+      } else {
+        if (this.menuSelected !== "") {
+          this.menuSelected = "";
+          lastCheck = Date.now();
+          console.log("game none selected");
+          clearInterval(this.menuCountdown);
+          count = 4;
+          this.$menuCountdown.text("");
+        }
       }
-
       if (this.menuSelected === "game1") {
         this.$menuItem1.css("opacity", "1");
         this.$menuItem2.css("opacity", "0.5");
       } else if (this.menuSelected === "game2") {
         this.$menuItem1.css("opacity", "0.5");
         this.$menuItem2.css("opacity", "1");
-      }
-    };
-
-    const countdown = async count => {
-      for (let i = count; i >= 0; i--) {
-        this.$menuCountdown.text(i);
-        await wait(1000);
-      }
-
-      this.$menu.hide();
-      this.$menuBg.hide();
-      this.camera.targetMode = false;
-      this.camera.webcamImage.visible = true;
-      this.$canvasWrapper.css("opacity", "0");
-      this.menuItem1.visible = false;
-      this.menuItem2.visible = false;
-      this.checkIntersectionHandle = null;
-      if (this.menuSelected === "game1") {
-        this.postState({
-          [`${this.name}.state`]: "state3",
-          [`${this.name}.single`]: {
-            score: 0
-          },
-          [`${this.name}.vs`]: {
-            score: 0
-          },
-          [`${this.name}.squat`]: {
-            score: 0
-          }
-        });
       } else {
-        this.postState({
-          [`${this.name}.state`]: "state3",
-          [`${this.name}.single`]: {
-            score: 0
-          },
-          [`${this.name}.vs`]: {
-            score: 0
-          },
-          [`${this.name}.squat`]: {
-            score: 0
-          }
-        });
+        this.$menuItem1.css("opacity", "0.5");
+        this.$menuItem2.css("opacity", "0.5");
       }
     };
-    this.$menuCountdown.text(10);
-    countdown(10);
   }
 
   // 主目錄
@@ -478,29 +526,21 @@ export class Game {
         this.checkIntersectionHandle = null;
         if (this.menuSelected === "game1") {
           this.postState({
-            [`${this.name}.state`]: "state4",
-            [`${this.name}.single`]: {
-              score: 0
-            },
-            [`${this.name}.vs`]: {
-              score: 0
-            },
-            [`${this.name}.squat`]: {
-              score: 0
-            }
+            id: uuidv4(),
+            name: this.name,
+            state: "state4"
           });
-        } else {
+        } else if (this.menuSelected === "game2") {
           this.postState({
-            [`${this.name}.state`]: "state4",
-            [`${this.name}.single`]: {
-              score: 0
-            },
-            [`${this.name}.vs`]: {
-              score: 0
-            },
-            [`${this.name}.squat`]: {
-              score: 0
-            }
+            id: uuidv4(),
+            name: this.name,
+            state: "state6"
+          });
+        } else if (this.menuSelected === "back") {
+          this.postState({
+            id: uuidv4(),
+            name: this.name,
+            state: "state2"
           });
         }
       }
@@ -541,6 +581,19 @@ export class Game {
             this.$menuCountdown2.text("");
             this.menuCountdown2 = setInterval(countdown, 1000);
           }
+        } else if (
+          targetHand.intersectsWithObject(this.menuItem3, true, true)
+        ) {
+          if (this.menuSelected !== "back") {
+            this.menuSelected = "back";
+            sound.click.play();
+            lastCheck = Date.now();
+            console.log("back selected");
+            clearInterval(this.menuCountdown2);
+            count = 4;
+            this.$menuCountdown2.text("");
+            this.menuCountdown2 = setInterval(countdown, 1000);
+          }
         } else {
           if (this.menuSelected !== "") {
             this.menuSelected = "";
@@ -564,12 +617,19 @@ export class Game {
       if (this.menuSelected === "game1") {
         this.$menuItem3.css("opacity", "1");
         this.$menuItem4.css("opacity", "0.5");
+        this.$menuBack2.css("opacity", "0.5");
       } else if (this.menuSelected === "game2") {
         this.$menuItem3.css("opacity", "0.5");
         this.$menuItem4.css("opacity", "1");
+        this.$menuBack2.css("opacity", "0.5");
+      } else if (this.menuSelected === "back") {
+        this.$menuItem3.css("opacity", "0.5");
+        this.$menuItem4.css("opacity", "0.5");
+        this.$menuBack2.css("opacity", "1");
       } else {
         this.$menuItem3.css("opacity", "0.5");
         this.$menuItem4.css("opacity", "0.5");
+        this.$menuBack2.css("opacity", "0.5");
       }
     };
   }
@@ -586,10 +646,14 @@ export class Game {
     this.$singleTimesup.hide();
     this.$singleLevelup.hide();
     this.$singleSmash.hide();
+    this.$singleScoreBoard.show();
+    this.$vsScoreBoard.hide();
 
     sound.bg.play();
 
     this.$singleScore.text(0);
+    this.$vsP1Score.text(0);
+    this.$vsP2Score.text(0);
     this.$singleLevel.text(`LEVEL 1`);
 
     this.singleTimesup = false;
@@ -606,6 +670,8 @@ export class Game {
     this.singleLevel = 1;
     this.singlePassed = 0;
     this.singleScore = 0;
+    this.vsP1Score = 0;
+    this.vsP2Score = 0;
     await this.startLineLevelGame(1000);
 
     this.$singleTimesup.show();
@@ -625,16 +691,9 @@ export class Game {
     this.$singleSmash.hide();
 
     this.postState({
-      [`${this.name}.state`]: "state5",
-      [`${this.name}.single`]: {
-        score: this.singleScore
-      },
-      [`${this.name}.vs`]: {
-        score: 0
-      },
-      [`${this.name}.squat`]: {
-        score: 0
-      }
+      id: uuidv4(),
+      name: this.name,
+      state: "state5"
     });
   }
 
@@ -660,19 +719,254 @@ export class Game {
       this.camera.webcamImage.visible = true;
       this.$canvasWrapper.css("opacity", "0");
       this.postState({
-        [`${this.name}.state`]: "state3",
-        [`${this.name}.single`]: {
-          score: 0
-        },
-        [`${this.name}.vs`]: {
-          score: 0
-        },
-        [`${this.name}.squat`]: {
-          score: 0
-        }
+        id: uuidv4(),
+        name: this.name,
+        state: "state3"
       });
     };
     this.$singleEndCountdown.text(10);
+    countdown(10);
+  }
+
+  async state6() {
+    this.$room.show();
+    this.$roomBg.show();
+    this.camera.targetMode = true;
+    this.camera.webcamImage.visible = false;
+    this.$canvasWrapper.css("opacity", "0.6");
+    this.$roomAvatar1.empty();
+    this.$roomAvatar2.empty();
+
+    let svg = createAvatar(style, {
+      seed: this.data.id
+    });
+    this.$roomAvatar1.html(svg);
+
+    this.menuSelected = "";
+    sound.bg.stop();
+
+    let count = 4;
+    const countdown = () => {
+      this.$roomCountdown.text(count);
+      count--;
+
+      if (count < 0) {
+        clearInterval(this.roomCountdown);
+
+        this.$room.hide();
+        this.$roomBg.hide();
+        this.camera.targetMode = false;
+        this.camera.webcamImage.visible = true;
+        this.$canvasWrapper.css("opacity", "0");
+        this.checkIntersectionHandle = null;
+        if (this.menuSelected === "back") {
+          this.postState({
+            id: uuidv4(),
+            name: this.name,
+            state: "state3"
+          });
+        }
+      }
+    };
+    this.$roomCountdown.text("");
+
+    let lastCheck = Date.now();
+    this.checkIntersectionHandle = () => {
+      if (Date.now() - lastCheck < 200) return;
+      // const leftHand = this.camera.keypoints["left_wrist"];
+      const rightHand = this.camera.keypoints["right_wrist"];
+      let targetHand;
+      if (rightHand && rightHand.visible) {
+        targetHand = rightHand;
+      }
+      if (targetHand) {
+        if (targetHand.intersectsWithObject(this.menuItem3, true, true)) {
+          if (this.menuSelected !== "back") {
+            this.menuSelected = "back";
+            sound.click.play();
+            lastCheck = Date.now();
+            console.log("back selected");
+            clearInterval(this.roomCountdown);
+            count = 4;
+            this.$roomCountdown.text("");
+            this.roomCountdown = setInterval(countdown, 1000);
+          }
+        } else {
+          if (this.menuSelected !== "") {
+            this.menuSelected = "";
+            lastCheck = Date.now();
+            console.log("game none selected");
+            clearInterval(this.roomCountdown);
+            count = 4;
+            this.$roomCountdown.text("");
+          }
+        }
+      } else {
+        if (this.menuSelected !== "") {
+          this.menuSelected = "";
+          lastCheck = Date.now();
+          console.log("game none selected");
+          clearInterval(this.roomCountdown);
+          count = 4;
+          this.$roomCountdown.text("");
+        }
+      }
+      if (this.menuSelected === "back") {
+        this.$roomBack.css("opacity", "1");
+      } else {
+        this.$roomBack.css("opacity", "0.5");
+      }
+    };
+
+    clearInterval(this.roomTimer);
+    this.roomTimer = setInterval(() => {
+      if (this.data.room) {
+        clearInterval(this.roomCountdown);
+        clearInterval(this.roomTimer);
+        const op =
+          this.name === this.data.room.players[0].name
+            ? this.data.room.players[1]
+            : this.data.room.players[0];
+        let svg = createAvatar(style, {
+          seed: op.id
+        });
+        this.$roomAvatar2.html(svg);
+
+        setTimeout(() => {
+          this.$room.hide();
+          this.$roomBg.hide();
+          this.camera.targetMode = false;
+          this.camera.webcamImage.visible = true;
+          this.$canvasWrapper.css("opacity", "0");
+          this.postState({
+            id: uuidv4(),
+            name: this.name,
+            state: "state7",
+            roomId: this.data.roomId
+          });
+        }, 3000);
+      }
+    }, 500);
+  }
+
+  async state7() {
+    this.$single.show();
+    this.$singleBg.show();
+    this.$canvasWrapper.css("opacity", "1");
+    this.$singlePassed1.css("background-color", "transparent");
+    this.$singlePassed2.css("background-color", "transparent");
+    this.$singlePassed3.css("background-color", "transparent");
+    this.$singlePassed4.css("background-color", "transparent");
+    this.$singlePassed5.css("background-color", "transparent");
+    this.$singleTimesup.hide();
+    this.$singleLevelup.hide();
+    this.$singleSmash.hide();
+    this.$singleScoreBoard.hide();
+    this.$vsScoreBoard.show();
+
+    sound.bg.play();
+
+    this.$singleScore.text(0);
+    this.$vsP1Score.text(0);
+    this.$vsP2Score.text(0);
+    this.$singleLevel.text(`LEVEL 1`);
+
+    clearInterval(this.vsTimer);
+    this.vsTimer = setInterval(() => {
+      try {
+        // 把自己的數據上傳到 server
+        this.postState({
+          id: uuidv4(),
+          name: this.name,
+          state: "state7",
+          roomId: this.data.roomId,
+          score: this.vsP1Score
+        });
+        // 更新對手的分數
+        const op =
+          this.name === this.data.room.players[0].name
+            ? this.data.room.players[1]
+            : this.data.room.players[0];
+        this.vsP2Score = op.score || 0;
+        this.$vsP2Score.text(this.vsP2Score);
+      } catch (error) {
+        console.log(error);
+      }
+    }, 500);
+
+    this.singleTimesup = false;
+    const countdown = async count => {
+      for (let i = count; i >= 0; i--) {
+        this.$singleCountdown.text(i);
+        await wait(1000);
+      }
+      this.singleTimesup = true;
+    };
+    this.$singleCountdown.text(60);
+    countdown(60);
+
+    this.singleLevel = 1;
+    this.singlePassed = 0;
+    this.singleScore = 0;
+    this.vsP1Score = 0;
+    this.vsP2Score = 0;
+    await this.startLineLevelGame(1000);
+
+    this.$singleTimesup.show();
+
+    await wait(3000);
+    clearInterval(this.vsTimer);
+    await wait(1000);
+
+    this.rect1.visible = false;
+    this.rect2.visible = false;
+    this.rect3.visible = false;
+    this.line.visible = false;
+
+    this.$single.hide();
+    this.$singleBg.hide();
+    this.$canvasWrapper.css("opacity", "0");
+    this.$singleTimesup.hide();
+    this.$singleLevelup.hide();
+    this.$singleSmash.hide();
+
+    this.postState({
+      id: uuidv4(),
+      name: this.name,
+      state: "state8",
+      roomId: this.data.roomId
+    });
+  }
+
+  async state8() {
+    this.$vsEnd.show();
+    this.$vsEndBg.show();
+    this.camera.targetMode = true;
+    this.camera.webcamImage.visible = false;
+    this.$canvasWrapper.css("opacity", "0.6");
+
+    sound.bg.stop();
+
+    this.$vsEndP1Score.text(this.vsP1Score || 0);
+    this.$vsEndP2Score.text(this.vsP2Score || 0);
+
+    const countdown = async count => {
+      for (let i = count; i >= 0; i--) {
+        this.$vsEndCountdown.text(i);
+        await wait(1000);
+      }
+      this.$vsEnd.hide();
+      this.$vsEndBg.hide();
+      this.camera.targetMode = false;
+      this.camera.webcamImage.visible = true;
+      this.$canvasWrapper.css("opacity", "0");
+      this.postState({
+        id: uuidv4(),
+        name: this.name,
+        state: "state3"
+      });
+    };
+    this.$vsEndCountdown.text(10);
     countdown(10);
   }
 
@@ -805,10 +1099,13 @@ export class Game {
         // 分數分析
         this.singleScore +=
           100 * ((this.singleLevel - 1) * 5 + this.singlePassed);
+        this.vsP1Score +=
+          100 * ((this.singleLevel - 1) * 5 + this.singlePassed);
       }
 
       // 更新 ui
       this.$singleScore.text(this.singleScore);
+      this.$vsP1Score.text(this.vsP1Score);
       this.$singleLevel.text(`LEVEL ${this.singleLevel}`);
       if (this.singlePassed >= 1) {
         this.$singlePassed1.css("background-color", "blue");
