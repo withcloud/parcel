@@ -4,6 +4,7 @@ import { fabric } from "fabric";
 import { createAvatar } from "@dicebear/avatars";
 import * as style from "@dicebear/pixel-art";
 import { v4 as uuidv4 } from "uuid";
+import _ from "lodash";
 
 import * as sound from "./sound";
 
@@ -191,6 +192,8 @@ export class Game {
     this.$singleTimesup = $("#single-timesup");
     this.$singleLevelup.hide();
     this.$singleSmash.hide();
+    this.$singleWhereAreYou = $("#single-where-are-you");
+    this.$singleWhereAreYou.hide();
     this.$singleTimesup.hide();
     this.$singleEnd = $("#single-end");
     this.$singleEndBg = $("#single-end-bg");
@@ -1067,40 +1070,48 @@ export class Game {
       // 變回綠色
       this.line.set("stroke", "rgba(255,0,0,0.5)");
 
-      console.log("kit", kit);
-      if (kit) {
-        sound.click5.play();
-      } else {
-        sound.click4.play();
-      }
-
-      // 重置關卡
-      if (kit) {
-        // passed 歸零
-        this.singlePassed = 0;
-        // 關卡不變
-        // 不會加分數
-        this.$singleSmash.show();
+      const points = _.filter(this.camera.keypoints, k => k.visible);
+      if (points.length < 7) {
+        this.$singleWhereAreYou.show();
         setTimeout(() => {
-          this.$singleSmash.hide();
+          this.$singleWhereAreYou.hide();
         }, 500);
       } else {
-        // passed +1
-        this.singlePassed += 1;
-        // 關卡分析
-        if (this.singlePassed > 5) {
-          this.singleLevel += 1;
-          this.singlePassed = 1;
-          this.$singleLevelup.show();
-          setTimeout(() => {
-            this.$singleLevelup.hide();
-          }, 500);
+        console.log("kit", kit);
+        if (kit) {
+          sound.click5.play();
+        } else {
+          sound.click4.play();
         }
-        // 分數分析
-        this.singleScore +=
-          100 * ((this.singleLevel - 1) * 5 + this.singlePassed);
-        this.vsP1Score +=
-          100 * ((this.singleLevel - 1) * 5 + this.singlePassed);
+
+        // 重置關卡
+        if (kit) {
+          // passed 歸零
+          this.singlePassed = 0;
+          // 關卡不變
+          // 不會加分數
+          this.$singleSmash.show();
+          setTimeout(() => {
+            this.$singleSmash.hide();
+          }, 500);
+        } else {
+          // passed +1
+          this.singlePassed += 1;
+          // 關卡分析
+          if (this.singlePassed > 5) {
+            this.singleLevel += 1;
+            this.singlePassed = 1;
+            this.$singleLevelup.show();
+            setTimeout(() => {
+              this.$singleLevelup.hide();
+            }, 500);
+          }
+          // 分數分析
+          this.singleScore +=
+            100 * ((this.singleLevel - 1) * 5 + this.singlePassed);
+          this.vsP1Score +=
+            100 * ((this.singleLevel - 1) * 5 + this.singlePassed);
+        }
       }
 
       // 更新 ui
