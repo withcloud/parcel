@@ -15,7 +15,7 @@ const lineLimits = [
       xMin: 0,
       xMax: 0,
       yMin: 0,
-      yMax: 480
+      yMax: 480,
     },
     options: [
       // 上
@@ -23,23 +23,23 @@ const lineLimits = [
         xMin: 0,
         xMax: 640,
         yMin: 0,
-        yMax: 0
+        yMax: 0,
       },
       // 右
       {
         xMin: 640,
         xMax: 640,
         yMin: 0,
-        yMax: 480
+        yMax: 480,
       },
       // 下
       {
         xMin: 0,
         xMax: 640,
         yMin: 480,
-        yMax: 480
-      }
-    ]
+        yMax: 480,
+      },
+    ],
   },
   // 起點在上邊
   {
@@ -47,7 +47,7 @@ const lineLimits = [
       xMin: 0,
       xMax: 640,
       yMin: 0,
-      yMax: 0
+      yMax: 0,
     },
     options: [
       // 左
@@ -55,23 +55,23 @@ const lineLimits = [
         xMin: 0,
         xMax: 0,
         yMin: 0,
-        yMax: 480
+        yMax: 480,
       },
       // 右
       {
         xMin: 640,
         xMax: 640,
         yMin: 0,
-        yMax: 480
+        yMax: 480,
       },
       // 下
       {
         xMin: 0,
         xMax: 640,
         yMin: 480,
-        yMax: 480
-      }
-    ]
+        yMax: 480,
+      },
+    ],
   },
   // 起點在右邊
   {
@@ -79,7 +79,7 @@ const lineLimits = [
       xMin: 640,
       xMax: 640,
       yMin: 0,
-      yMax: 480
+      yMax: 480,
     },
     options: [
       // 左
@@ -87,23 +87,23 @@ const lineLimits = [
         xMin: 0,
         xMax: 0,
         yMin: 0,
-        yMax: 480
+        yMax: 480,
       },
       // 上
       {
         xMin: 0,
         xMax: 640,
         yMin: 0,
-        yMax: 0
+        yMax: 0,
       },
       // 下
       {
         xMin: 0,
         xMax: 640,
         yMin: 480,
-        yMax: 480
-      }
-    ]
+        yMax: 480,
+      },
+    ],
   },
   // 起點在下邊
   {
@@ -111,7 +111,7 @@ const lineLimits = [
       xMin: 0,
       xMax: 640,
       yMin: 480,
-      yMax: 480
+      yMax: 480,
     },
     options: [
       // 左
@@ -119,24 +119,24 @@ const lineLimits = [
         xMin: 0,
         xMax: 0,
         yMin: 0,
-        yMax: 480
+        yMax: 480,
       },
       // 上
       {
         xMin: 0,
         xMax: 640,
         yMin: 0,
-        yMax: 0
+        yMax: 0,
       },
       // 右
       {
         xMin: 640,
         xMax: 640,
         yMin: 0,
-        yMax: 480
-      }
-    ]
-  }
+        yMax: 480,
+      },
+    ],
+  },
 ];
 
 export class Game {
@@ -230,7 +230,7 @@ export class Game {
     this.postState({
       id: uuidv4(),
       name: this.name,
-      state: "state3"
+      state: "state3",
     });
   }
 
@@ -244,7 +244,7 @@ export class Game {
       height: 300,
       stroke: "#eee",
       strokeWidth: 10,
-      fill: "rgba(0,0,200,0.5)"
+      fill: "rgba(0,0,200,0.5)",
     });
     this.canvas.add(this.menuItem1);
     this.menuItem1.zIndex = 10;
@@ -257,7 +257,7 @@ export class Game {
       height: 300,
       stroke: "#eee",
       strokeWidth: 10,
-      fill: "rgba(0,200,0,0.5)"
+      fill: "rgba(0,200,0,0.5)",
     });
     this.canvas.add(this.menuItem2);
     this.menuItem2.zIndex = 10;
@@ -270,7 +270,7 @@ export class Game {
       height: 140,
       stroke: "#eee",
       strokeWidth: 10,
-      fill: "rgba(0,200,0,0.5)"
+      fill: "rgba(0,200,0,0.5)",
     });
     this.canvas.add(this.menuItem3);
     this.menuItem3.zIndex = 10;
@@ -280,7 +280,7 @@ export class Game {
       stroke: "green",
       strokeWidth: 16,
       originX: "center",
-      originY: "center"
+      originY: "center",
     });
     this.canvas.add(this.line);
     this.line.zIndex = 20;
@@ -291,21 +291,21 @@ export class Game {
       top: 0,
       width: 40,
       height: 40,
-      fill: "rgba(200,0,0,0.5)"
+      fill: "rgba(200,0,0,0.5)",
     });
     this.rect2 = new fabric.Rect({
       left: 40,
       top: 0,
       width: 40,
       height: 40,
-      fill: "rgba(0,200,0,0.5)"
+      fill: "rgba(0,200,0,0.5)",
     });
     this.rect3 = new fabric.Rect({
       left: 80,
       top: 0,
       width: 40,
       height: 40,
-      fill: "rgba(0,0,200,0.5)"
+      fill: "rgba(0,0,200,0.5)",
     });
     this.canvas.add(this.rect1);
     this.canvas.add(this.rect2);
@@ -362,7 +362,7 @@ export class Game {
       const response = await fetch(`https://${host}/api/state`, {
         method: "post",
         body: JSON.stringify(obj),
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
       await response.json();
     } catch (error) {
@@ -377,7 +377,7 @@ export class Game {
     setTimeout(() => {
       this.$intro.hide();
       this.postState({
-        [`${this.name}.state`]: "state2"
+        [`${this.name}.state`]: "state2",
       });
     }, 10000);
   }
@@ -417,13 +417,13 @@ export class Game {
           this.postState({
             id: uuidv4(),
             name: this.name,
-            state: "state3"
+            state: "state3",
           });
         } else {
           this.postState({
             id: uuidv4(),
             name: this.name,
-            state: "state3"
+            state: "state3",
           });
         }
       }
@@ -531,19 +531,19 @@ export class Game {
           this.postState({
             id: uuidv4(),
             name: this.name,
-            state: "state4"
+            state: "state4",
           });
         } else if (this.menuSelected === "game2") {
           this.postState({
             id: uuidv4(),
             name: this.name,
-            state: "state6"
+            state: "state6",
           });
         } else if (this.menuSelected === "back") {
           this.postState({
             id: uuidv4(),
             name: this.name,
-            state: "state2"
+            state: "state2",
           });
         }
       }
@@ -660,7 +660,7 @@ export class Game {
     this.$singleLevel.text(`LEVEL 1`);
 
     this.singleTimesup = false;
-    const countdown = async count => {
+    const countdown = async (count) => {
       for (let i = count; i >= 0; i--) {
         this.$singleCountdown.text(i);
         await wait(1000);
@@ -696,7 +696,7 @@ export class Game {
     this.postState({
       id: uuidv4(),
       name: this.name,
-      state: "state5"
+      state: "state5",
     });
   }
 
@@ -711,7 +711,7 @@ export class Game {
 
     this.$singleEndScore.text(this.singleScore);
 
-    const countdown = async count => {
+    const countdown = async (count) => {
       for (let i = count; i >= 0; i--) {
         this.$singleEndCountdown.text(i);
         await wait(1000);
@@ -724,7 +724,7 @@ export class Game {
       this.postState({
         id: uuidv4(),
         name: this.name,
-        state: "state3"
+        state: "state3",
       });
     };
     this.$singleEndCountdown.text(10);
@@ -741,7 +741,7 @@ export class Game {
     this.$roomAvatar2.empty();
 
     let svg = createAvatar(style, {
-      seed: this.data.id
+      seed: this.data.id,
     });
     this.$roomAvatar1.html(svg);
 
@@ -766,7 +766,7 @@ export class Game {
           this.postState({
             id: uuidv4(),
             name: this.name,
-            state: "state3"
+            state: "state3",
           });
         }
       }
@@ -831,7 +831,7 @@ export class Game {
             ? this.data.room.players[1]
             : this.data.room.players[0];
         let svg = createAvatar(style, {
-          seed: op.id
+          seed: op.id,
         });
         this.$roomAvatar2.html(svg);
 
@@ -845,7 +845,7 @@ export class Game {
             id: uuidv4(),
             name: this.name,
             state: "state7",
-            roomId: this.data.roomId
+            roomId: this.data.roomId,
           });
         }, 3000);
       }
@@ -883,7 +883,7 @@ export class Game {
           name: this.name,
           state: "state7",
           roomId: this.data.roomId,
-          score: this.vsP1Score
+          score: this.vsP1Score,
         });
         // 更新對手的分數
         const op =
@@ -898,7 +898,7 @@ export class Game {
     }, 500);
 
     this.singleTimesup = false;
-    const countdown = async count => {
+    const countdown = async (count) => {
       for (let i = count; i >= 0; i--) {
         this.$singleCountdown.text(i);
         await wait(1000);
@@ -937,7 +937,7 @@ export class Game {
       id: uuidv4(),
       name: this.name,
       state: "state8",
-      roomId: this.data.roomId
+      roomId: this.data.roomId,
     });
   }
 
@@ -953,7 +953,7 @@ export class Game {
     this.$vsEndP1Score.text(this.vsP1Score || 0);
     this.$vsEndP2Score.text(this.vsP2Score || 0);
 
-    const countdown = async count => {
+    const countdown = async (count) => {
       for (let i = count; i >= 0; i--) {
         this.$vsEndCountdown.text(i);
         await wait(1000);
@@ -966,7 +966,7 @@ export class Game {
       this.postState({
         id: uuidv4(),
         name: this.name,
-        state: "state3"
+        state: "state3",
       });
     };
     this.$vsEndCountdown.text(10);
@@ -1018,7 +1018,7 @@ export class Game {
         x1,
         y1,
         x2,
-        y2
+        y2,
       });
       this.line.set("stroke", "rgba(0,255,0,0.25)");
 
@@ -1047,7 +1047,7 @@ export class Game {
       let dx2 = 0;
       let dy1 = 0;
       let dy2 = 0;
-      Object.keys(this.camera.keypoints).forEach(key => {
+      Object.keys(this.camera.keypoints).forEach((key) => {
         const kp = this.camera.keypoints[key];
         if (kp.visible) {
           const d = getDxDy(kp.left, kp.top, x1, y1, x2, y2);
@@ -1070,8 +1070,8 @@ export class Game {
       // 變回綠色
       this.line.set("stroke", "rgba(255,0,0,0.5)");
 
-      const points = _.filter(this.camera.keypoints, k => k.visible);
-      if (points.length < 7) {
+      const points = _.filter(this.camera.keypoints, (k) => k.visible);
+      if (points.length < 10) {
         this.$singleWhereAreYou.show();
         setTimeout(() => {
           this.$singleWhereAreYou.hide();
@@ -1158,7 +1158,7 @@ export class Game {
 }
 
 async function wait(time) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, time);
   });
 }
@@ -1199,6 +1199,6 @@ function getDxDy(x, y, x1, y1, x2, y2) {
 
   return {
     dx,
-    dy
+    dy,
   };
 }
