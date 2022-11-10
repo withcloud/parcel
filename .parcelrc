@@ -1,10 +1,5 @@
 {
   "extends": ["@parcel/config-default"],
   "reporters":  ["...", "parcel-reporter-static-files-copy"],
-  "optimizers": {
-    "*.js": [
-      "...",
-      "@rbf/parcel-optimizer-javascript-obfuscator"
-    ]
-  }
+  "resolvers": ["parcel-resolver-ignore", "..."]
 }

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1.0, user-scalable=no"
+    />
+    <link href="./index.css" rel="stylesheet" />
+    <script type="module" src="app.js"></script>
+  </head>
+
+  <body class="bg-gray-300">
+    <!-- bg -->
+    <div
+      id="menu-bg"
+      class="absolute inset-0 flex justify-center items-center bg-gradient-to-r from-[#3c2673] to-[#6a2383]"
+    ></div>
+    <div
+      id="menu-bg2"
+      class="absolute inset-0 flex justify-center items-center bg-gradient-to-b from-[#0B72FF] via-[#6476FE] to-[#6F77FE]"
+    >
+      <div
+        class="w-full h-full bg-[length:200%] bg-no-repeat bg-center bg-[url('/images/space_break/home/background.png')]"
+      ></div>
+    </div>
+    <div
+      id="single-bg"
+      class="absolute inset-0 flex justify-center items-center"
+    >
+      <video
+        muted
+        playsinline
+        autoplay
+        loop
+        class="absolute w-full h-full object-cover"
+      >
+        <source src="/video/bg.mp4" />
+      </video>
+    </div>
+    <div
+      id="single-end-bg"
+      class="absolute inset-0 flex justify-center items-center bg-gradient-to-b from-[#0B72FF] via-[#6476FE] to-[#6F77FE]"
+    ></div>
+    <div
+      id="room-bg"
+      class="absolute inset-0 flex justify-center items-center bg-gradient-to-b from-[#0B72FF] via-[#6476FE] to-[#6F77FE]"
+    ></div>
+    <div
+      id="vs-end-bg"
+      class="absolute inset-0 flex justify-center items-center bg-[#6F77FE]"
+    ></div>
+
+    <!-- main -->
+    <div class="absolute inset-0 flex justify-center items-center">
+      <div class="relative w-[640px] h-[480px]">
+        <!-- menu -->
+        <div id="menu" class="w-[640px] h-[480px] absolute top-0 left-0">
+          <div class="flex justify-center relative mt-10">
+            <img src="/images/common/title-bg.png" class="w-[200px]" />
+            <div
+              class="absolute inset-0 flex justify-center items-center text-lg text-black font-medium"
+            >
+              <h1>大廳</h1>
+            </div>
+          </div>
+
+          <div
+            id="menu-countdown"
+            class="absolute top-12 right-5 text-white text-4xl"
+          ></div>
+
+          <div class="flex justify-center space-x-8 mt-16">
+            <div id="menu-item1" class="w-[280px]">
+              <img src="/images/home/sapce-break.png" class="w-[280]" />
+              <div class="p-[10px] text-white">
+                <p class="text-xl font-medium">Space Break</p>
+                <p class="text-lg">
+                  在不斷襲來的鐳射禁區中，讓您的身體動起來吧
+                </p>
+              </div>
+            </div>
+            <div id="menu-item2" class="w-[280px]">
+              <img src="/images/home/squat.png" class="w-[280]" />
+              <div class="p-[10px] text-white">
+                <p class="text-xl font-medium">深蹲</p>
+                <p class="text-lg">
+                  為心跳和身體的健康譜曲
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- menu2 -->
+        <div id="menu2" class="w-[640px] h-[480px] absolute top-0 left-0">
+          <div
+            id="menu-countdown2"
+            class="absolute top-12 right-5 text-white text-4xl"
+          ></div>
+
+          <div id="menu-back2" class="absolute top-12 left-5">
+            <div
+              class="inline-flex items-center rounded-full border border-transparent bg-white p-3 text-black shadow-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 19.5L8.25 12l7.5-7.5"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div
+            class="mt-24 font-['Arial'] text-[100px] font-bold leading-[80px] flex justify-center items-center text-white"
+          >
+            <div>
+              <p>SPACE</p>
+              <p>BREAK</p>
+            </div>
+          </div>
+
+          <div class="flex justify-center space-x-8 mt-10">
+            <div id="menu-item3" class="flex justify-center relative">
+              <img src="/images/common/title-bg.png" class="w-[200px]" />
+              <div
+                class="absolute inset-0 flex justify-center items-center text-lg text-black font-medium"
+              >
+                <p>單人模式</p>
+              </div>
+            </div>
+            <div id="menu-item4" class="flex justify-center relative">
+              <img src="/images/common/title-bg.png" class="w-[200px]" />
+              <div
+                class="absolute inset-0 flex justify-center items-center text-lg text-black font-medium"
+              >
+                <p>競賽模式</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- room -->
+        <div id="room" class="w-[640px] h-[480px] absolute top-0 left-0">
+          <div
+            id="room-countdown"
+            class="absolute top-12 right-5 text-white text-4xl"
+          ></div>
+
+          <div id="room-back" class="absolute top-12 left-5">
+            <div
+              class="inline-flex items-center rounded-full border border-transparent bg-white p-3 text-black shadow-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 19.5L8.25 12l7.5-7.5"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div class="flex justify-center relative mt-10">
+            <img src="/images/common/title-bg.png" class="w-[200px]" />
+            <div
+              class="absolute inset-0 flex justify-center items-center text-lg text-black font-medium"
+            >
+              <h1>競賽模式</h1>
+            </div>
+          </div>
+
+          <div class="flex justify-center items-center space-x-2 mt-12">
+            <!-- p1 -->
+            <div
+              class="rounded-2xl p-[10px] flex flex-col items-center bg-[#D4FF2F]"
+            >
+              <div
+                id="room_avatar1"
+                class="w-[200px] h-[200px] rounded-2xl bg-[#02FFFF]"
+              ></div>
+              <div class="text-4xl font-normal mt-2">本機</div>
+            </div>
+            <!-- vs -->
+            <div class="text-white font-['Arial']">
+              <div class="font-bold text-[90px]">VS</div>
+            </div>
+            <!-- p2 -->
+            <div
+              class="rounded-2xl p-[10px] flex flex-col items-center bg-[#C7C7C7]"
+            >
+              <div
+                id="room_avatar2"
+                class="w-[200px] h-[200px] rounded-2xl bg-white"
+              ></div>
+              <div class="text-4xl font-normal mt-2">對手</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- single end -->
+        <div id="single-end" class="w-[640px] h-[480px] absolute top-0 left-0">
+          <div class="flex w-full h-full justify-center items-center">
+            <div class="w-[300px]">
+              <div
+                class="w-[280px] h-[280px] m-[10px] relative flex flex-col justify-center items-center text-white"
+              >
+                <img
+                  class="absolute w-full h-full bg-cover animate-pulse"
+                  src="/images/space_break/singleEndPage/ellipse-score.png"
+                />
+                <div class=" text-[64px] leading-[64px] text-center">
+                  <div id="single-end-score" class="animate-bounce">0</div>
+                  <div class="w-full mt-2 text-[32px] leading-[40px]">得分</div>
+                </div>
+              </div>
+              <div
+                id="single-end-countdown"
+                class="text-center text-white text-4xl mt-8"
+              >
+                0
+              </div>
+            </div>
+            <!-- <div class="flex-1">2</div> -->
+          </div>
+        </div>
+
+        <!-- vs end -->
+        <div id="vs-end" class="w-[640px] h-[480px] absolute top-0 left-0">
+          <div
+            id="vs-end-countdown"
+            class="absolute top-12 right-5 text-white text-4xl"
+          ></div>
+
+          <div class="flex justify-center relative mt-10">
+            <img src="/images/common/title-bg.png" class="w-[200px]" />
+            <div
+              class="absolute inset-0 flex justify-center items-center text-lg text-black font-medium"
+            >
+              <h1>游戲結束</h1>
+            </div>
+          </div>
+
+          <div
+            class="h-[280px] mx-[32px] mt-10 rounded-2xl border-2 border-white shadow-xl bg-[#ffffff]/20 flex justify-center items-center"
+          >
+            <div class="flex justify-center items-center space-x-2">
+              <!-- p1 -->
+              <div
+                class="w-[200px] h-[200px] m-[10px] relative flex flex-col justify-center items-center text-white"
+              >
+                <img
+                  class="absolute w-full h-full bg-cover animate-pulse"
+                  src="/images/space_break/singleEndPage/ellipse-score.png"
+                />
+                <div class=" text-[48px] leading-[48px] text-center">
+                  <div id="vs-end-p1-score">20000</div>
+                  <div class="w-full mt-2 text-[24px] leading-[32px]">
+                    本機得分
+                  </div>
+                </div>
+              </div>
+              <!-- vs -->
+              <div class="text-white font-['Arial']">
+                <div class="font-bold text-[72px]">VS</div>
+              </div>
+              <!-- p2 -->
+              <div
+                class="w-[200px] h-[200px] m-[10px] relative flex flex-col justify-center items-center text-white"
+              >
+                <img
+                  class="absolute w-full h-full bg-cover animate-pulse"
+                  src="/images/space_break/singleEndPage/ellipse-score.png"
+                />
+                <div class=" text-[48px] leading-[48px] text-center">
+                  <div id="vs-end-p2-score">20000</div>
+                  <div class="w-full mt-2 text-[24px] leading-[32px]">
+                    對手得分
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- camera and canvas -->
+        <div id="canvas-wrapper" class="canvas-wrapper">
+          <canvas id="output" width="640" height="480"></canvas>
+          <video
+            id="video"
+            class="opacity-25 hidden"
+            playsinline
+            style="
+                -webkit-transform: scaleX(-1);
+                transform: scaleX(-1);
+                "
+          ></video>
+        </div>
+
+        <!-- intro -->
+        <div
+          id="intro"
+          class="w-[640px] h-[480px] bg-red-400 opacity-50 absolute top-0 left-0"
+        >
+          <div
+            class="w-full h-full flex justify-center items-center text-4xl text-black"
+          >
+            intro
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- single -->
+    <div id="single" class="absolute inset-0 flex justify-center items-center">
+      <div
+        id="single-levelup"
+        class="absolute inset-0 shadow-getWin flex justify-center items-center"
+      >
+        <div
+          class="text-center font-['Inter'] text-[100px] font-bold tracking-widest text-white drop-shadow-lg"
+        >
+          LEVEL UP
+        </div>
+      </div>
+
+      <div
+        id="single-smash"
+        class="absolute inset-0 shadow-getLose flex justify-center items-center"
+      >
+        <div
+          class="text-center font-['Inter'] text-[100px] font-bold tracking-widest text-white drop-shadow-lg"
+        >
+          SMASH!
+        </div>
+      </div>
+
+      <div
+        id="single-where-are-you"
+        class="absolute inset-0 shadow-getLose flex justify-center items-center"
+      >
+        <div
+          class="text-center font-['Inter'] text-[100px] font-bold tracking-widest text-white drop-shadow-lg"
+        >
+          你在哪兄弟!
+        </div>
+      </div>
+
+      <div
+        id="single-timesup"
+        class="absolute inset-0 shadow-getLose flex justify-center items-center"
+      >
+        <div
+          class="text-center font-['Inter'] text-[100px] font-bold tracking-widest text-white drop-shadow-lg"
+        >
+          TIME'S UP
+        </div>
+      </div>
+
+      <!-- single inner -->
+      <div id="single-inner" class="w-[640px] h-[480px] relative">
+        <div id="single-score-board" class="absolute top-10 left-10">
+          <div class="border-2 border-white rounded-md p-[2px]">
+            <p class="text-[10px] text-white font-medium leading-3 ml-[2px]">
+              SCORE
+            </p>
+            <p
+              id="single-score"
+              class="font-['Atomic_Age'] text-[36px] text-white font-medium leading-9 mt-[2px]"
+            >
+              0
+            </p>
+          </div>
+        </div>
+
+        <div id="vs-score-board" class="absolute top-10 left-10">
+          <div class="flex items-center divide-x-[3px] space-x-[12px]">
+            <img
+              class="h-[40px]"
+              src="/images/space_break/detect/double-players.png"
+            />
+            <div class="pl-[16px] space-y-[4px] text-white">
+              <div class="font-['Atomic_Age'] text-[20px] leading-[22px]">
+                <span class="font-['Inter']">本機：</span>
+                <span id="vs-p1-score">
+                  10
+                </span>
+              </div>
+              <div class="font-['Atomic_Age'] text-[20px] leading-[22px]">
+                <span class="font-['Inter']">對手：</span>
+                <span id="vs-p2-score">
+                  10
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="absolute top-10 right-10 text-right">
+          <p class="text-[10px] text-white font-medium leading-3 ml-[2px]">
+            TIME
+          </p>
+          <p
+            id="single-countdown"
+            class="font-['Atomic_Age'] text-[36px] text-white font-medium leading-9 mt-[2px]"
+          >
+            01
+          </p>
+        </div>
+
+        <div class="absolute bottom-10 left-10 text-left ">
+          <div class="flex space-x-[6px]">
+            <div
+              id="single-passed1"
+              class="border-4 border-cyan-300 w-[16px] h-[40px]"
+            ></div>
+            <div
+              id="single-passed2"
+              class="border-4 border-cyan-300 w-[16px] h-[40px]"
+            ></div>
+            <div
+              id="single-passed3"
+              class="border-4 border-cyan-300 w-[16px] h-[40px]"
+            ></div>
+            <div
+              id="single-passed4"
+              class="border-4 border-cyan-300 w-[16px] h-[40px]"
+            ></div>
+            <div
+              id="single-passed5"
+              class="border-4 border-cyan-300 w-[16px] h-[40px]"
+            ></div>
+          </div>
+          <p
+            id="single-level"
+            class="text-[16px] text-white font-bold leading-4"
+          >
+            LEVEL 1
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute inset-0">
+      <!-- fpx -->
+      <div id="stats"></div>
+
+      <!-- text -->
+      <div
+        id="text"
+        class="absolute whitespace-pre-wrap top-0 right-0 opacity-25"
+      ></div>
+    </div>
+  </body>
+</html>

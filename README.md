@@ -16,3 +16,9 @@
 
 已整合 posthtml
 ```
+
+```
+chrome://flags/#allow-insecure-localhost
+```
+
+test
