@@ -46,7 +46,7 @@ const COLOR_PALETTE = [
   "#bfef45",
   "#f032e6",
   "#3cb44b",
-  "#a9a9a9"
+  "#a9a9a9",
 ];
 export class Camera {
   constructor() {
@@ -82,12 +82,12 @@ export class Camera {
         width: sizeOption.width,
         height: sizeOption.height,
         frameRate: {
-          ideal: targetFPS
+          ideal: targetFPS,
         },
         deviceId: window.search.deviceId
           ? { ideal: window.search.deviceId }
-          : undefined
-      }
+          : undefined,
+      },
     };
 
     let stream = await navigator.mediaDevices.getUserMedia(videoConfig);
@@ -124,7 +124,7 @@ export class Camera {
     const camera = new Camera();
     camera.video.srcObject = stream;
 
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       camera.video.onloadedmetadata = () => {
         resolve(true);
       };
@@ -157,7 +157,7 @@ export class Camera {
       objectCaching: false,
       selectable: false,
       hoverCursor: "default",
-      flipX: true
+      flipX: true,
     });
     this.canvas.add(this.webcamImage);
     this.webcamImage.zIndex = 0;
@@ -179,10 +179,10 @@ export class Camera {
       { key: "right_wrist", x: 401.8436716010829, y: 233.24806604143765 },
       { key: "right_hip", x: 355.6434497439315, y: 257.652027433169 },
       { key: "right_knee", x: 372.4374681545515, y: 355.0741245796427 },
-      { key: "right_ankle", x: 379.8362369533651, y: 434.69482907758584 }
+      { key: "right_ankle", x: 379.8362369533651, y: 434.69482907758584 },
     ];
 
-    keypoints.forEach(keypoint => {
+    keypoints.forEach((keypoint) => {
       const c = new fabric.Circle({
         left: keypoint.x,
         top: keypoint.y,
@@ -193,11 +193,31 @@ export class Camera {
         originX: "center",
         originY: "center",
         objectCaching: false,
-        selectable: false
+        selectable: false,
       });
       c.poseId = 0;
       c.keypointName = keypoint.key;
       this.canvas.add(c);
+
+      // //
+      // const score = keypoint.score != null ? keypoint.score : 1;
+      // const scoreThreshold = params.STATE.modelConfig.scoreThreshold || 0;
+
+      // const c = this.keypoints[keypoint.name];
+      // const target = this.target;
+
+      // // 有找到, 大於 scoreThreshold
+      // if (score >= scoreThreshold) {
+      //   c.visible = true;
+      //   c.left = keypoint.x;
+      //   c.top = keypoint.y;
+      //   if (keypoint.name === "right_wrist" && this.targetMode) {
+      //     target.visible = true;
+      //     target.left = keypoint.x;
+      //     target.top = keypoint.y;
+      //   }
+      // } else {
+
       this.keypoints[keypoint.key] = c;
       c.zIndex = 8;
     });
@@ -205,7 +225,7 @@ export class Camera {
     const target = {
       key: "target",
       x: 401.8436716010829,
-      y: 233.24806604143765
+      y: 233.24806604143765,
     };
     const c = new fabric.Circle({
       left: target.x,
@@ -217,7 +237,7 @@ export class Camera {
       originX: "center",
       originY: "center",
       objectCaching: false,
-      selectable: false
+      selectable: false,
     });
     c.poseId = 0;
     c.keypointName = target.key;
@@ -230,113 +250,113 @@ export class Camera {
         x1: 321.1714486608809,
         y1: 69.27845376056568,
         x2: 312.5737016684717,
-        y2: 60.40401521600088
+        y2: 60.40401521600088,
       },
       {
         key: "nose,right_eye",
         x1: 321.1714486608809,
         y1: 69.27845376056568,
         x2: 330.1192676127817,
-        y2: 61.59546395552639
+        y2: 61.59546395552639,
       },
       {
         key: "left_eye,left_ear",
         x1: 312.5737016684717,
         y1: 60.40401521600088,
         x2: 306.1615931664136,
-        y2: 67.72593275154101
+        y2: 67.72593275154101,
       },
       {
         key: "right_eye,right_ear",
         x1: 330.1192676127817,
         y1: 61.59546395552639,
         x2: 344.14965868115553,
-        y2: 70.13012397148042
+        y2: 70.13012397148042,
       },
       {
         key: "left_shoulder,right_shoulder",
         x1: 285.6424011819502,
         y1: 120.37349587262328,
         x2: 373.72537015381164,
-        y2: 117.17275512873869
+        y2: 117.17275512873869,
       },
       {
         key: "left_shoulder,left_elbow",
         x1: 285.6424011819502,
         y1: 120.37349587262328,
         x2: 262.8932517686212,
-        y2: 185.90749724590802
+        y2: 185.90749724590802,
       },
       {
         key: "left_shoulder,left_hip",
         x1: 285.6424011819502,
         y1: 120.37349587262328,
         x2: 300.98320318717384,
-        y2: 257.3983293087912
+        y2: 257.3983293087912,
       },
       {
         key: "right_shoulder,right_elbow",
         x1: 373.72537015381164,
         y1: 117.17275512873869,
         x2: 389.1451043473787,
-        y2: 183.68152693301627
+        y2: 183.68152693301627,
       },
       {
         key: "right_shoulder,right_hip",
         x1: 373.72537015381164,
         y1: 117.17275512873869,
         x2: 355.6434497439315,
-        y2: 257.652027433169
+        y2: 257.652027433169,
       },
       {
         key: "left_elbow,left_wrist",
         x1: 262.8932517686212,
         y1: 185.90749724590802,
         x2: 254.0534185314233,
-        y2: 236.3666420149043
+        y2: 236.3666420149043,
       },
       {
         key: "right_elbow,right_wrist",
         x1: 389.1451043473787,
         y1: 183.68152693301627,
         x2: 401.8436716010829,
-        y2: 233.24806604143765
+        y2: 233.24806604143765,
       },
       {
         key: "left_hip,right_hip",
         x1: 300.98320318717384,
         y1: 257.3983293087912,
         x2: 355.6434497439315,
-        y2: 257.652027433169
+        y2: 257.652027433169,
       },
       {
         key: "left_hip,left_knee",
         x1: 300.98320318717384,
         y1: 257.3983293087912,
         x2: 292.6207436919961,
-        y2: 354.79140469875375
+        y2: 354.79140469875375,
       },
       {
         key: "right_hip,right_knee",
         x1: 355.6434497439315,
         y1: 257.652027433169,
         x2: 372.4374681545515,
-        y2: 355.0741245796427
+        y2: 355.0741245796427,
       },
       {
         key: "left_knee,left_ankle",
         x1: 292.6207436919961,
         y1: 354.79140469875375,
         x2: 282.0647667840646,
-        y2: 422.89684171640425
+        y2: 422.89684171640425,
       },
       {
         key: "right_knee,right_ankle",
         x1: 372.4374681545515,
         y1: 355.0741245796427,
         x2: 379.8362369533651,
-        y2: 434.69482907758584
-      }
+        y2: 434.69482907758584,
+      },
     ];
 
     skeletons.forEach(({ key, x1, y1, x2, y2 }) => {
@@ -346,7 +366,7 @@ export class Camera {
         strokeWidth: 2,
         evented: false,
         objectCaching: false,
-        selectable: false
+        selectable: false,
       });
       this.canvas.add(line);
       this.skeletons[key] = line;
@@ -362,7 +382,7 @@ export class Camera {
    */
   async drawResult(pose) {
     if (pose.keypoints != null) {
-      pose.keypoints.forEach(kp => {
+      pose.keypoints.forEach((kp) => {
         kp.x = this.canvas.width - kp.x;
       });
 
@@ -401,6 +421,7 @@ export class Camera {
     const c = this.keypoints[keypoint.name];
     const target = this.target;
 
+    // 有找到, 大於 scoreThreshold
     if (score >= scoreThreshold) {
       c.visible = true;
       c.left = keypoint.x;
@@ -409,6 +430,14 @@ export class Camera {
         target.visible = true;
         target.left = keypoint.x;
         target.top = keypoint.y;
+
+        // 記錄找到的資料
+        this.last右手 = {
+          left: keypoint.x,
+          top: keypoint.y,
+        };
+        // 洗零
+        this.沒找到的次數 = 0;
       }
     } else {
       c.visible = false;
@@ -418,6 +447,23 @@ export class Camera {
         target.visible = false;
         target.left = keypoint.x;
         target.top = keypoint.y;
+
+        // 沒找到，小於 scoreThreshold
+
+        // 沒找到，看看是否已經沒找到超過 10 次
+        // 如果已經超過十次，相信現在真的沒有右手
+
+        this.沒找到的次數 += 1;
+
+        if (this.沒找到的次數 > 10) {
+          // 沒事繼續
+        } else {
+          // 如果沒超過十次，用回上次的值
+          if (this.last右手) {
+            c.left = this.last右手.left;
+            c.top = this.last右手.top;
+          }
+        }
       }
     }
   }
@@ -452,7 +498,7 @@ export class Camera {
           x1: kp1.x,
           y1: kp1.y,
           x2: kp2.x,
-          y2: kp2.y
+          y2: kp2.y,
         });
       } else {
         line.visible = false;
@@ -460,7 +506,7 @@ export class Camera {
           x1: kp1.x,
           y1: kp1.y,
           x2: kp2.x,
-          y2: kp2.y
+          y2: kp2.y,
         });
       }
     }
@@ -636,7 +682,7 @@ function calcAngle(A1x, A1y, A2x, A2y, B1x, B1y, B2x, B2y) {
 }
 
 async function wait(time) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, time);
   });
 }
