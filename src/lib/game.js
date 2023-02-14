@@ -1,8 +1,6 @@
 /* global $ */
 
 import { fabric } from "fabric";
-import { createAvatar } from "@dicebear/avatars";
-import * as style from "@dicebear/pixel-art";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 
@@ -15,7 +13,7 @@ const lineLimits = [
       xMin: 0,
       xMax: 0,
       yMin: 0,
-      yMax: 480,
+      yMax: 480
     },
     options: [
       // 上
@@ -23,23 +21,23 @@ const lineLimits = [
         xMin: 0,
         xMax: 640,
         yMin: 0,
-        yMax: 0,
+        yMax: 0
       },
       // 右
       {
         xMin: 640,
         xMax: 640,
         yMin: 0,
-        yMax: 480,
+        yMax: 480
       },
       // 下
       {
         xMin: 0,
         xMax: 640,
         yMin: 480,
-        yMax: 480,
-      },
-    ],
+        yMax: 480
+      }
+    ]
   },
   // 起點在上邊
   {
@@ -47,7 +45,7 @@ const lineLimits = [
       xMin: 0,
       xMax: 640,
       yMin: 0,
-      yMax: 0,
+      yMax: 0
     },
     options: [
       // 左
@@ -55,23 +53,23 @@ const lineLimits = [
         xMin: 0,
         xMax: 0,
         yMin: 0,
-        yMax: 480,
+        yMax: 480
       },
       // 右
       {
         xMin: 640,
         xMax: 640,
         yMin: 0,
-        yMax: 480,
+        yMax: 480
       },
       // 下
       {
         xMin: 0,
         xMax: 640,
         yMin: 480,
-        yMax: 480,
-      },
-    ],
+        yMax: 480
+      }
+    ]
   },
   // 起點在右邊
   {
@@ -79,7 +77,7 @@ const lineLimits = [
       xMin: 640,
       xMax: 640,
       yMin: 0,
-      yMax: 480,
+      yMax: 480
     },
     options: [
       // 左
@@ -87,23 +85,23 @@ const lineLimits = [
         xMin: 0,
         xMax: 0,
         yMin: 0,
-        yMax: 480,
+        yMax: 480
       },
       // 上
       {
         xMin: 0,
         xMax: 640,
         yMin: 0,
-        yMax: 0,
+        yMax: 0
       },
       // 下
       {
         xMin: 0,
         xMax: 640,
         yMin: 480,
-        yMax: 480,
-      },
-    ],
+        yMax: 480
+      }
+    ]
   },
   // 起點在下邊
   {
@@ -111,7 +109,7 @@ const lineLimits = [
       xMin: 0,
       xMax: 640,
       yMin: 480,
-      yMax: 480,
+      yMax: 480
     },
     options: [
       // 左
@@ -119,24 +117,24 @@ const lineLimits = [
         xMin: 0,
         xMax: 0,
         yMin: 0,
-        yMax: 480,
+        yMax: 480
       },
       // 上
       {
         xMin: 0,
         xMax: 640,
         yMin: 0,
-        yMax: 0,
+        yMax: 0
       },
       // 右
       {
         xMin: 640,
         xMax: 640,
         yMin: 0,
-        yMax: 480,
-      },
-    ],
-  },
+        yMax: 480
+      }
+    ]
+  }
 ];
 
 export class Game {
@@ -151,9 +149,6 @@ export class Game {
   }
 
   start() {
-    // api 不斷讀取
-    this.startLoop();
-
     // 設置好常用的 div
     // 暫時不用的可以先用 jquery 隱藏掉
 
@@ -227,11 +222,7 @@ export class Game {
     // 遊戲流程
 
     // menu
-    this.postState({
-      id: uuidv4(),
-      name: this.name,
-      state: "state3",
-    });
+    this.state2();
   }
 
   setupCanvasObjects() {
@@ -244,7 +235,7 @@ export class Game {
       height: 300,
       stroke: "#eee",
       strokeWidth: 10,
-      fill: "rgba(0,0,200,0.5)",
+      fill: "rgba(0,0,200,0.5)"
     });
     this.canvas.add(this.menuItem1);
     this.menuItem1.zIndex = 10;
@@ -257,7 +248,7 @@ export class Game {
       height: 300,
       stroke: "#eee",
       strokeWidth: 10,
-      fill: "rgba(0,200,0,0.5)",
+      fill: "rgba(0,200,0,0.5)"
     });
     this.canvas.add(this.menuItem2);
     this.menuItem2.zIndex = 10;
@@ -270,7 +261,7 @@ export class Game {
       height: 140,
       stroke: "#eee",
       strokeWidth: 10,
-      fill: "rgba(0,200,0,0.5)",
+      fill: "rgba(0,200,0,0.5)"
     });
     this.canvas.add(this.menuItem3);
     this.menuItem3.zIndex = 10;
@@ -280,7 +271,7 @@ export class Game {
       stroke: "green",
       strokeWidth: 16,
       originX: "center",
-      originY: "center",
+      originY: "center"
     });
     this.canvas.add(this.line);
     this.line.zIndex = 20;
@@ -291,21 +282,21 @@ export class Game {
       top: 0,
       width: 40,
       height: 40,
-      fill: "rgba(200,0,0,0.5)",
+      fill: "rgba(200,0,0,0.5)"
     });
     this.rect2 = new fabric.Rect({
       left: 40,
       top: 0,
       width: 40,
       height: 40,
-      fill: "rgba(0,200,0,0.5)",
+      fill: "rgba(0,200,0,0.5)"
     });
     this.rect3 = new fabric.Rect({
       left: 80,
       top: 0,
       width: 40,
       height: 40,
-      fill: "rgba(0,0,200,0.5)",
+      fill: "rgba(0,0,200,0.5)"
     });
     this.canvas.add(this.rect1);
     this.canvas.add(this.rect2);
@@ -318,68 +309,10 @@ export class Game {
     this.rect3.visible = false;
   }
 
-  startLoop() {
-    clearInterval(window.gameAPITimer);
-    this.fetching = false;
-    window.gameAPITimer = setInterval(async () => {
-      if (this.fetching) return;
-      this.fetching = true;
-      // api 讀取
-      try {
-        const host = window.search.host || "zoke.io";
-        const response = await fetch(
-          `https://${host}/api/state?name=` + this.name
-        );
-        const data = await response.json();
-        this.data = data;
-      } catch (error) {
-        console.log(error);
-      }
-
-      // 根據 api 做相應的處理
-      if (!this.data) return;
-
-      const nextState = this.data?.state;
-      if (nextState && nextState !== this.state) {
-        this.state = nextState;
-        if (this[this.state]) {
-          this[this.state]();
-        }
-      }
-      this.fetching = false;
-    }, 200);
-  }
-
   checkIntersection() {
     if (this.checkIntersectionHandle) {
       this.checkIntersectionHandle();
     }
-  }
-
-  async postState(obj) {
-    try {
-      const host = window.search.host || "zoke.io";
-      const response = await fetch(`https://${host}/api/state`, {
-        method: "post",
-        body: JSON.stringify(obj),
-        headers: { "Content-Type": "application/json" },
-      });
-      await response.json();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  // info
-  async state1() {
-    this.$intro.show();
-
-    setTimeout(() => {
-      this.$intro.hide();
-      this.postState({
-        [`${this.name}.state`]: "state2",
-      });
-    }, 10000);
   }
 
   // 主目錄
@@ -417,13 +350,13 @@ export class Game {
           this.postState({
             id: uuidv4(),
             name: this.name,
-            state: "state3",
+            state: "state3"
           });
         } else {
           this.postState({
             id: uuidv4(),
             name: this.name,
-            state: "state3",
+            state: "state3"
           });
         }
       }
@@ -531,19 +464,19 @@ export class Game {
           this.postState({
             id: uuidv4(),
             name: this.name,
-            state: "state4",
+            state: "state4"
           });
         } else if (this.menuSelected === "game2") {
           this.postState({
             id: uuidv4(),
             name: this.name,
-            state: "state6",
+            state: "state6"
           });
         } else if (this.menuSelected === "back") {
           this.postState({
             id: uuidv4(),
             name: this.name,
-            state: "state2",
+            state: "state2"
           });
         }
       }
@@ -660,7 +593,7 @@ export class Game {
     this.$singleLevel.text(`LEVEL 1`);
 
     this.singleTimesup = false;
-    const countdown = async (count) => {
+    const countdown = async count => {
       for (let i = count; i >= 0; i--) {
         this.$singleCountdown.text(i);
         await wait(1000);
@@ -696,7 +629,7 @@ export class Game {
     this.postState({
       id: uuidv4(),
       name: this.name,
-      state: "state5",
+      state: "state5"
     });
   }
 
@@ -711,7 +644,7 @@ export class Game {
 
     this.$singleEndScore.text(this.singleScore);
 
-    const countdown = async (count) => {
+    const countdown = async count => {
       for (let i = count; i >= 0; i--) {
         this.$singleEndCountdown.text(i);
         await wait(1000);
@@ -724,268 +657,12 @@ export class Game {
       this.postState({
         id: uuidv4(),
         name: this.name,
-        state: "state3",
+        state: "state3"
       });
     };
     this.$singleEndCountdown.text(10);
     countdown(10);
   }
-
-  async state6() {
-    this.$room.show();
-    this.$roomBg.show();
-    this.camera.targetMode = true;
-    this.camera.webcamImage.visible = false;
-    this.$canvasWrapper.css("opacity", "0.6");
-    this.$roomAvatar1.empty();
-    this.$roomAvatar2.empty();
-
-    let svg = createAvatar(style, {
-      seed: this.data.id,
-    });
-    this.$roomAvatar1.html(svg);
-
-    this.menuSelected = "";
-    sound.bg.stop();
-
-    let count = 4;
-    const countdown = () => {
-      this.$roomCountdown.text(count);
-      count--;
-
-      if (count < 0) {
-        clearInterval(this.roomCountdown);
-
-        this.$room.hide();
-        this.$roomBg.hide();
-        this.camera.targetMode = false;
-        this.camera.webcamImage.visible = true;
-        this.$canvasWrapper.css("opacity", "0");
-        this.checkIntersectionHandle = null;
-        if (this.menuSelected === "back") {
-          this.postState({
-            id: uuidv4(),
-            name: this.name,
-            state: "state3",
-          });
-        }
-      }
-    };
-    this.$roomCountdown.text("");
-
-    let lastCheck = Date.now();
-    this.checkIntersectionHandle = () => {
-      if (Date.now() - lastCheck < 200) return;
-      // const leftHand = this.camera.keypoints["left_wrist"];
-      const rightHand = this.camera.keypoints["right_wrist"];
-      let targetHand;
-      if (rightHand && rightHand.visible) {
-        targetHand = rightHand;
-      }
-      if (targetHand) {
-        if (targetHand.intersectsWithObject(this.menuItem3, true, true)) {
-          if (this.menuSelected !== "back") {
-            this.menuSelected = "back";
-            sound.click.play();
-            lastCheck = Date.now();
-            console.log("back selected");
-            clearInterval(this.roomCountdown);
-            count = 4;
-            this.$roomCountdown.text("");
-            this.roomCountdown = setInterval(countdown, 1000);
-          }
-        } else {
-          if (this.menuSelected !== "") {
-            this.menuSelected = "";
-            lastCheck = Date.now();
-            console.log("game none selected");
-            clearInterval(this.roomCountdown);
-            count = 4;
-            this.$roomCountdown.text("");
-          }
-        }
-      } else {
-        if (this.menuSelected !== "") {
-          this.menuSelected = "";
-          lastCheck = Date.now();
-          console.log("game none selected");
-          clearInterval(this.roomCountdown);
-          count = 4;
-          this.$roomCountdown.text("");
-        }
-      }
-      if (this.menuSelected === "back") {
-        this.$roomBack.css("opacity", "1");
-      } else {
-        this.$roomBack.css("opacity", "0.5");
-      }
-    };
-
-    clearInterval(this.roomTimer);
-    this.roomTimer = setInterval(() => {
-      if (this.data.room) {
-        clearInterval(this.roomCountdown);
-        clearInterval(this.roomTimer);
-        const op =
-          this.name === this.data.room.players[0].name
-            ? this.data.room.players[1]
-            : this.data.room.players[0];
-        let svg = createAvatar(style, {
-          seed: op.id,
-        });
-        this.$roomAvatar2.html(svg);
-
-        setTimeout(() => {
-          this.$room.hide();
-          this.$roomBg.hide();
-          this.camera.targetMode = false;
-          this.camera.webcamImage.visible = true;
-          this.$canvasWrapper.css("opacity", "0");
-          this.postState({
-            id: uuidv4(),
-            name: this.name,
-            state: "state7",
-            roomId: this.data.roomId,
-          });
-        }, 3000);
-      }
-    }, 500);
-  }
-
-  async state7() {
-    this.$single.show();
-    this.$singleBg.show();
-    this.$canvasWrapper.css("opacity", "1");
-    this.$singlePassed1.css("background-color", "transparent");
-    this.$singlePassed2.css("background-color", "transparent");
-    this.$singlePassed3.css("background-color", "transparent");
-    this.$singlePassed4.css("background-color", "transparent");
-    this.$singlePassed5.css("background-color", "transparent");
-    this.$singleTimesup.hide();
-    this.$singleLevelup.hide();
-    this.$singleSmash.hide();
-    this.$singleScoreBoard.hide();
-    this.$vsScoreBoard.show();
-
-    sound.bg.play();
-
-    this.$singleScore.text(0);
-    this.$vsP1Score.text(0);
-    this.$vsP2Score.text(0);
-    this.$singleLevel.text(`LEVEL 1`);
-
-    clearInterval(this.vsTimer);
-    this.vsTimer = setInterval(() => {
-      try {
-        // 把自己的數據上傳到 server
-        this.postState({
-          id: uuidv4(),
-          name: this.name,
-          state: "state7",
-          roomId: this.data.roomId,
-          score: this.vsP1Score,
-        });
-        // 更新對手的分數
-        const op =
-          this.name === this.data.room.players[0].name
-            ? this.data.room.players[1]
-            : this.data.room.players[0];
-        this.vsP2Score = op.score || 0;
-        this.$vsP2Score.text(this.vsP2Score);
-      } catch (error) {
-        console.log(error);
-      }
-    }, 500);
-
-    this.singleTimesup = false;
-    const countdown = async (count) => {
-      for (let i = count; i >= 0; i--) {
-        this.$singleCountdown.text(i);
-        await wait(1000);
-      }
-      this.singleTimesup = true;
-    };
-    this.$singleCountdown.text(60);
-    countdown(60);
-
-    this.singleLevel = 1;
-    this.singlePassed = 0;
-    this.singleScore = 0;
-    this.vsP1Score = 0;
-    this.vsP2Score = 0;
-    await this.startLineLevelGame(1000);
-
-    this.$singleTimesup.show();
-
-    await wait(3000);
-    clearInterval(this.vsTimer);
-    await wait(1000);
-
-    this.rect1.visible = false;
-    this.rect2.visible = false;
-    this.rect3.visible = false;
-    this.line.visible = false;
-
-    this.$single.hide();
-    this.$singleBg.hide();
-    this.$canvasWrapper.css("opacity", "0");
-    this.$singleTimesup.hide();
-    this.$singleLevelup.hide();
-    this.$singleSmash.hide();
-
-    this.postState({
-      id: uuidv4(),
-      name: this.name,
-      state: "state8",
-      roomId: this.data.roomId,
-    });
-  }
-
-  async state8() {
-    this.$vsEnd.show();
-    this.$vsEndBg.show();
-    this.camera.targetMode = true;
-    this.camera.webcamImage.visible = false;
-    this.$canvasWrapper.css("opacity", "0.6");
-
-    sound.bg.stop();
-
-    this.$vsEndP1Score.text(this.vsP1Score || 0);
-    this.$vsEndP2Score.text(this.vsP2Score || 0);
-
-    const countdown = async (count) => {
-      for (let i = count; i >= 0; i--) {
-        this.$vsEndCountdown.text(i);
-        await wait(1000);
-      }
-      this.$vsEnd.hide();
-      this.$vsEndBg.hide();
-      this.camera.targetMode = false;
-      this.camera.webcamImage.visible = true;
-      this.$canvasWrapper.css("opacity", "0");
-      this.postState({
-        id: uuidv4(),
-        name: this.name,
-        state: "state3",
-      });
-    };
-    this.$vsEndCountdown.text(10);
-    countdown(10);
-  }
-
-  // async state3() {
-  //   // 不斷做的事
-  //   // 每隔幾秒
-  //   // 顯示一條線，線的 xy 隨機 (半透明)
-  //   // 再隔一秒
-  //   // 線變實線
-  //   // 判斷距離
-  //   await this.startLineLevelGame(1000);
-  // }
-
-  // async state4() {
-  //   alert("game2");
-  // }
 
   async startLineLevelGame(times) {
     for (let i = 0; i < times; i++) {
@@ -1018,7 +695,7 @@ export class Game {
         x1,
         y1,
         x2,
-        y2,
+        y2
       });
       this.line.set("stroke", "rgba(0,255,0,0.25)");
 
@@ -1047,7 +724,7 @@ export class Game {
       let dx2 = 0;
       let dy1 = 0;
       let dy2 = 0;
-      Object.keys(this.camera.keypoints).forEach((key) => {
+      Object.keys(this.camera.keypoints).forEach(key => {
         const kp = this.camera.keypoints[key];
         if (kp.visible) {
           const d = getDxDy(kp.left, kp.top, x1, y1, x2, y2);
@@ -1070,7 +747,7 @@ export class Game {
       // 變回綠色
       this.line.set("stroke", "rgba(255,0,0,0.5)");
 
-      const points = _.filter(this.camera.keypoints, (k) => k.visible);
+      const points = _.filter(this.camera.keypoints, k => k.visible);
       if (points.length < 10) {
         this.$singleWhereAreYou.show();
         setTimeout(() => {
@@ -1158,7 +835,7 @@ export class Game {
 }
 
 async function wait(time) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(resolve, time);
   });
 }
@@ -1199,6 +876,6 @@ function getDxDy(x, y, x1, y1, x2, y2) {
 
   return {
     dx,
-    dy,
+    dy
   };
 }
